@@ -3,7 +3,6 @@
         display: flex;
         flex-flow: column;
         align-items: center;
-        justify-content: center;
         font-size: xx-large;
     }
 
