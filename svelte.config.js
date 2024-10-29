@@ -7,7 +7,7 @@ const config = {
 			fallback: '404.html'
 		}),
 		paths: {
-			base: process.argv.includes('dev') ? '' : '/your-repository-name'
+			base: process.argv.includes('dev') ? '' : '/Visual-Analytics-Project'
 		}
 	}
 };
