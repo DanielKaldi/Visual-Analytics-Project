@@ -1,14 +1,28 @@
-<style>
-    main{
-        display: flex;
-        flex-flow: column;
-        align-items: center;
-        font-size: xx-large;
-    }
+<script>
+	import Scatterplot from '../Components/Scatterplot.svelte';
 
-</style>
+	let { data } = $props();
+</script>
 
 <main>
-    <h1>Visual Analytics Project</h1>
-    <p>Not much to see here yet</p>
+	<h1 style="margin: 20px;">Visual Analytics Project</h1>
+	<Scatterplot
+		keyX="mileage"
+		keyY="price"
+		width={500}
+		height={500}
+		tickAmountX={14}
+		tickAmountY={10}
+		radius={1}
+		{data}
+	/>
 </main>
+
+<style>
+	main {
+		display: flex;
+		flex-flow: column;
+		align-items: center;
+		font-size: xx-large;
+	}
+</style>
