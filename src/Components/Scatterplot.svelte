@@ -14,8 +14,6 @@
 	let xDomain = extent(plotData, (d) => d.x);
 	let yDomain = extent(plotData, (d) => d.y);
 
-	console.log(yDomain);
-
 	let xScale = scaleLinear()
 		.domain(xDomain)
 		.range([margins.left, width - margins.right]);
