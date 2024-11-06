@@ -8,7 +8,7 @@
 
 	let plotData = [];
 	for (let i = 0; i < data.data.length; i++) {
-		plotData.push({ x: data.data[i][keyX], y: data.data[i][keyY] });
+		plotData.push({ x: Number(data.data[i][keyX]), y: Number(data.data[i][keyY]) });
 	}
 
 	let xDomain = extent(plotData, (d) => d.x);
@@ -16,10 +16,12 @@
 
 	let xScale = scaleLinear()
 		.domain(xDomain)
+		.nice()
 		.range([margins.left, width - margins.right]);
 
 	let yScale = scaleLinear()
 		.domain(yDomain)
+		.nice()
 		.range([height - margins.bottom, margins.top]);
 
 	const xTicks = xScale.ticks(tickAmountX);

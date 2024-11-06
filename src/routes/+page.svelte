@@ -11,7 +11,7 @@
 		keyY="price"
 		width={500}
 		height={500}
-		tickAmountX={14}
+		tickAmountX={10}
 		tickAmountY={10}
 		radius={1}
 		{data}
