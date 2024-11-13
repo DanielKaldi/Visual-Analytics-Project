@@ -1,6 +1,7 @@
 <script>
 	import Scatterplot from '../Components/Scatterplot.svelte';
 	import Piechart from '../Components/Piechart.svelte';
+	import Barchart from '../Components/Barchart.svelte';
 
 	let { data } = $props();
 </script>
@@ -21,6 +22,7 @@
 			{data}
 		/>
 		<Piechart width={200} height={200} labels="fuel" {data} />
+		<Barchart width={500} height={500} labels="fuel" {data} />
 	</div>
 </main>
 

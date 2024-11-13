@@ -3,6 +3,9 @@
 
 	let cleanData = [];
 	for (let i = 0; i < data.data.length; i++) {
+		if (data.data[i][labels] == undefined) {
+			continue;
+		}
 		var val;
 		if (key == undefined) {
 			val = 1;
