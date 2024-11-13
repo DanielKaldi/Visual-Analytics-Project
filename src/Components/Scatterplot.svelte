@@ -2,12 +2,26 @@
 	import { scaleLinear } from 'd3-scale';
 	import { extent } from 'd3-array';
 
-	let { keyX, keyY, width, height, tickAmountX, tickAmountY, radius, data } = $props();
+	let {
+		keyX,
+		keyY,
+		width,
+		height,
+		tickAmountX,
+		tickAmountY,
+		radius,
+		restrictTo,
+		restrictToKey,
+		data
+	} = $props();
 
 	let margins = { left: 50, top: 50, bottom: 50, right: 50 };
 
 	let plotData = [];
 	for (let i = 0; i < data.data.length; i++) {
+		if (data.data[i][restrictToKey] != restrictTo) {
+			continue;
+		}
 		plotData.push({ x: Number(data.data[i][keyX]), y: Number(data.data[i][keyY]) });
 	}
 
