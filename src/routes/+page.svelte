@@ -8,6 +8,7 @@
 
 <main>
 	<h1 style="margin: 20px;">Visual Analytics Project</h1>
+	<h2>Cars for sale in Germany in 2022</h2>
 	<div class="container">
 		<Scatterplot
 			keyX="mileage"
@@ -17,6 +18,8 @@
 			tickAmountX={10}
 			tickAmountY={10}
 			radius={1}
+			labelX="Milage"
+			labelY="Price"
 			restrictTo="Volkswagen"
 			restrictToKey="make"
 			{data}

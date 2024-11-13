@@ -10,6 +10,8 @@
 		tickAmountX,
 		tickAmountY,
 		radius,
+		labelY,
+		labelX,
 		restrictTo,
 		restrictToKey,
 		data
@@ -72,6 +74,16 @@
 		<line x1={margins.left - 3} y1={yScale(tick)} x2={margins.left + 3} y2={yScale(tick)} />
 		<text class="y" alignment-baseline="middle" x={margins.left - 5} y={yScale(tick)}>{tick}</text>
 	{/each}
+
+	<text x={margins.left} y={margins.top - 20} text-anchor="middle" style="font-size: 16px"
+		>{labelY}</text
+	>
+	<text
+		x={width - margins.right}
+		y={height - margins.bottom + 35}
+		text-anchor="middle"
+		style="font-size: 16px">{labelX}</text
+	>
 </svg>
 
 <style>
