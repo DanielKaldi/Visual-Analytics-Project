@@ -11,6 +11,7 @@
 	<h2>Cars for sale in Germany in 2022</h2>
 	<div class="container">
 		<Scatterplot
+			title="Volkswagen cars for sale in Germany 2022"
 			keyX="mileage"
 			keyY="price"
 			width={500}

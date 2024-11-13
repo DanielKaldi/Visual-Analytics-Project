@@ -3,6 +3,7 @@
 	import { extent } from 'd3-array';
 
 	let {
+		title,
 		keyX,
 		keyY,
 		width,
@@ -83,6 +84,12 @@
 		y={height - margins.bottom + 35}
 		text-anchor="middle"
 		style="font-size: 16px">{labelX}</text
+	>
+	<text
+		x={width / 2}
+		y={margins.top - 20}
+		text-anchor="middle"
+		style="font-size: 18px; font-weight: 500">{title}</text
 	>
 </svg>
 
