@@ -88,7 +88,7 @@
 <main>
 	<h1 style="margin: 20px;">Visual Analytics Project</h1>
 	<h2 style="margin: 10px;">Speedrun Data from Speedrun.com</h2>
-	<a class="customButton" href={base + '/'}>Car Data</a>
+	<!--<a class="customButton" href={base + '/'}>Car Data</a>-->
 	<p style="font-size: 16px;">
 		Not all data is loaded yet. Only the first 100 entries of every Query
 	</p>
