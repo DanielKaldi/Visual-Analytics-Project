@@ -3,6 +3,7 @@
 	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 	import Scatterplot from '../../Components/Scatterplot.svelte';
 	import Piechart from '../../Components/Piechart.svelte';
+	import { base } from '$app/paths';
 
 	let selectedGame = 'Game';
 	let gamesList = [
@@ -87,7 +88,7 @@
 <main>
 	<h1 style="margin: 20px;">Visual Analytics Project</h1>
 	<h2 style="margin: 10px;">Speedrun Data from Speedrun.com</h2>
-	<a class="customButton" href="../">Car Data</a>
+	<a class="customButton" href={base + '/'}>Car Data</a>
 	<p style="font-size: 16px;">
 		Not all data is loaded yet. Only the first 100 entries of every Query
 	</p>
