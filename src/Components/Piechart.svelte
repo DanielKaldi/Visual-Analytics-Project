@@ -2,17 +2,17 @@
 	let { key, labels, width, height, data } = $props();
 
 	let cleanData = [];
-	for (let i = 0; i < data.data.length; i++) {
-		if (data.data[i][labels] == undefined) {
+	for (let i = 0; i < data.length; i++) {
+		if (data[i][labels] == undefined) {
 			continue;
 		}
 		var val;
 		if (key == undefined) {
 			val = 1;
 		} else {
-			val = data.data[i][key];
+			val = data[i][key];
 		}
-		cleanData.push({ value: val, label: data.data[i][labels] });
+		cleanData.push({ value: val, label: data[i][labels] });
 	}
 
 	const plotData = cleanData.reduce((acc, item) => {
