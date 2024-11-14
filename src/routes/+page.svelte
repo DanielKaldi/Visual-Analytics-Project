@@ -3,6 +3,7 @@
 	import Piechart from '../Components/Piechart.svelte';
 	import Barchart from '../Components/Barchart.svelte';
 	import Linegraph from '../Components/Linegraph.svelte';
+	import { base } from '$app/paths';
 
 	let { data } = $props();
 </script>
@@ -10,7 +11,7 @@
 <main>
 	<h1 style="margin: 20px;">Visual Analytics Project</h1>
 	<h2 style="margin: 10px;">Cars for sale in Germany in 2022</h2>
-	<a class="customButton" href="/speedrun">Actual Data Prototype</a>
+	<a class="customButton" href={base + '/speedrun'}>Actual Data Prototype</a>
 	<div class="container">
 		<Scatterplot
 			title="Mercedes Benz cars"
