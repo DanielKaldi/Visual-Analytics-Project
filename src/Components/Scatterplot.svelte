@@ -33,14 +33,12 @@
 		}
 		if (XisDate) {
 			let xDate = new Date(data[i][keyX]);
-			//xData = xDate.getFullYear() * 10000 + (xDate.getMonth() + 1) * 100 + xDate.getDate();
 			xData = xDate.getTime();
 		} else {
 			xData = Number(data[i][keyX]);
 		}
 		if (YisDate) {
 			let yDate = new Date(data[i][keyY]);
-			//yData = yDate.getFullYear() * 10000 + (yDate.getMonth() + 1) * 100 + yDate.getDate();
 			yData = yDate.getTime();
 		} else {
 			yData = Number(data[i][keyY]);

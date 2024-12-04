@@ -46,7 +46,7 @@
 			restrictTo="Volkswagen"
 			restrictToKey="make"
 			avgY={true}
-			{data}
+			data={data.data}
 		/>
 	</div>
 </main>

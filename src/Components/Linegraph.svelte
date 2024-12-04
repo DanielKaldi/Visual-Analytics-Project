@@ -4,30 +4,32 @@
 	import { line, curveLinear } from 'd3-shape';
 
 	let {
-		title,
+		title = '',
 		keyX,
 		keyY,
-		width,
-		height,
-		tickAmountX,
-		tickAmountY,
-		radius,
-		labelY,
-		labelX,
+		width = 500,
+		height = 500,
+		tickAmountX = 10,
+		tickAmountY = 10,
+		radius = 1,
+		labelY = '',
+		labelX = '',
 		restrictTo,
 		restrictToKey,
 		avgY,
+		XisDate = false,
 		data
 	} = $props();
 
 	let margins = { left: 50, top: 50, bottom: 50, right: 50 };
 
 	let restrictedData = [];
-	for (let i = 0; i < data.data.length; i++) {
-		if (data.data[i][restrictToKey] != restrictTo) {
+	for (let i = 0; i < data.length; i++) {
+		if (data[i][restrictToKey] != restrictTo) {
 			continue;
 		}
-		restrictedData.push({ x: Number(data.data[i][keyX]), y: Number(data.data[i][keyY]) });
+
+		restrictedData.push({ x: Number(data[i][keyX]), y: Number(data[i][keyY]) });
 	}
 
 	var plotData;
@@ -70,6 +72,11 @@
 		.x((d) => xScale(d.x))
 		.y((d) => yScale(d.y))
 		.curve(curveLinear);
+
+	function customDateToStringMonth(date) {
+		date = new Date(date);
+		return `${date.getFullYear()}-${date.getMonth()}`;
+	}
 </script>
 
 <svg {width} {height}>
@@ -93,9 +100,15 @@
 			x2={xScale(tick)}
 			y2={height - margins.bottom + 3}
 		/>
-		<text class="x" alignment-baseline="hanging" x={xScale(tick)} y={height - margins.bottom + 5}
-			>{tick}</text
-		>
+		{#if XisDate}
+			<text class="x" alignment-baseline="hanging" x={xScale(tick)} y={height - margins.bottom + 5}
+				>{customDateToStringMonth(tick)}</text
+			>
+		{:else}
+			<text class="x" alignment-baseline="hanging" x={xScale(tick)} y={height - margins.bottom + 5}
+				>{tick}</text
+			>
+		{/if}
 	{/each}
 
 	<!-- y-axis -->

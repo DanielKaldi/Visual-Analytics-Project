@@ -4,6 +4,7 @@
 	import Scatterplot from '../../Components/Scatterplot.svelte';
 	import Piechart from '../../Components/Piechart.svelte';
 	import { base } from '$app/paths';
+	import Linegraph from '../../Components/Linegraph.svelte';
 
 	let pageSize = 200;
 
@@ -37,6 +38,8 @@
 	let gameData = null;
 	let isLoading = false;
 	let isProcessing = false;
+
+	let sumByMonthData = null;
 
 	async function fetchGameData(givenUrl, getCategories = false, game, category) {
 		isLoading = true;
@@ -143,6 +146,8 @@
 		gameData = cleanData(gameData);
 		gameData = replaceIDs(gameData);
 
+		sumByMonthData = await generateSumByMonthData(gameData);
+
 		isProcessing = false;
 	}
 
@@ -158,6 +163,45 @@
 		await setCategories(game);
 
 		isProcessing = false;
+	}
+
+	async function generateSumByMonthData(gameData) {
+		var data = [];
+		for (let i = 0; i < gameData.length; i++) {
+			let date = new Date(gameData[i].date);
+			let yearMonth = new Date(date.getFullYear(), date.getMonth());
+			data.push(yearMonth);
+		}
+
+		let earliestYear = new Date(Math.min(...data)).getFullYear();
+		let earliestMonth = new Date(Math.min(...data)).getMonth();
+
+		let range = [];
+		for (let i = earliestYear; i < new Date().getFullYear() + 1; i++) {
+			let nrMonth = 12;
+			if (i == new Date().getFullYear()) {
+				nrMonth = new Date().getMonth() + 1;
+			}
+			let startMonth = 1;
+			if (i == earliestYear) {
+				startMonth = earliestMonth;
+			}
+			for (let k = startMonth; k < nrMonth + 1; k++) {
+				range.push(new Date(i, k - 1));
+			}
+		}
+
+		let res = [];
+		for (let i = 0; i < range.length; i++) {
+			let sum = 0;
+			let elems = data.filter(
+				(e) => e.getFullYear() == range[i].getFullYear() && e.getMonth() == range[i].getMonth()
+			);
+			sum = elems.length;
+			res.push({ date: range[i], sum: sum });
+		}
+
+		return res;
 	}
 </script>
 
@@ -220,6 +264,19 @@
 				radius={2}
 				YisTime={true}
 				data={gameData}
+			/>
+			<Linegraph
+				keyX="date"
+				keyY="sum"
+				width={500}
+				height={500}
+				tickAmountX={5}
+				tickAmountY={10}
+				radius={3}
+				labelX="Submission Month"
+				labelY="Nr. of Runs"
+				XisDate={true}
+				data={sumByMonthData}
 			/>
 		{:else}
 			<div style="width:200px; height:500px; background-color:whitesmoke"></div>
