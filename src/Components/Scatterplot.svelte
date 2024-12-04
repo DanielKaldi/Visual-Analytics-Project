@@ -3,29 +3,50 @@
 	import { extent } from 'd3-array';
 
 	let {
-		title,
+		title = '',
 		keyX,
 		keyY,
-		width,
-		height,
-		tickAmountX,
-		tickAmountY,
-		radius,
-		labelY,
-		labelX,
+		width = 500,
+		height = 500,
+		tickAmountX = 10,
+		tickAmountY = 10,
+		radius = 1,
+		labelY = '',
+		labelX = '',
 		restrictTo,
 		restrictToKey,
-		data
+		data,
+		XisDate = false,
+		YisDate = false,
+		YisTime = false
 	} = $props();
 
 	let margins = { left: 50, top: 50, bottom: 50, right: 50 };
 
+	let xData;
+	let yData;
+
 	let plotData = [];
-	for (let i = 0; i < data.data.length; i++) {
-		if (data.data[i][restrictToKey] != restrictTo) {
+	for (let i = 0; i < data.length; i++) {
+		if (data[i][restrictToKey] != restrictTo) {
 			continue;
 		}
-		plotData.push({ x: Number(data.data[i][keyX]), y: Number(data.data[i][keyY]) });
+		if (XisDate) {
+			let xDate = new Date(data[i][keyX]);
+			//xData = xDate.getFullYear() * 10000 + (xDate.getMonth() + 1) * 100 + xDate.getDate();
+			xData = xDate.getTime();
+		} else {
+			xData = Number(data[i][keyX]);
+		}
+		if (YisDate) {
+			let yDate = new Date(data[i][keyY]);
+			//yData = yDate.getFullYear() * 10000 + (yDate.getMonth() + 1) * 100 + yDate.getDate();
+			yData = yDate.getTime();
+		} else {
+			yData = Number(data[i][keyY]);
+		}
+
+		plotData.push({ x: Number(xData), y: Number(yData) });
 	}
 
 	let xDomain = extent(plotData, (d) => d.x);
@@ -43,6 +64,24 @@
 
 	const xTicks = xScale.ticks(tickAmountX);
 	const yTicks = yScale.ticks(tickAmountY);
+
+	function secondsToTimeMS(time) {
+		const minutes = Math.floor(time / 60);
+		const seconds = time - minutes * 60;
+
+		return `${minutes}M-${seconds}S`;
+	}
+
+	function secondsToTimeM(time) {
+		const minutes = Math.floor(time / 60);
+
+		return `${minutes} min`;
+	}
+
+	function customDateToStringMonth(date) {
+		date = new Date(date);
+		return `${date.getFullYear()}-${date.getMonth()}`;
+	}
 </script>
 
 <svg {width} {height}>
@@ -64,16 +103,29 @@
 			x2={xScale(tick)}
 			y2={height - margins.bottom + 3}
 		/>
-		<text class="x" alignment-baseline="hanging" x={xScale(tick)} y={height - margins.bottom + 5}
-			>{tick}</text
-		>
+		{#if XisDate}
+			<text class="x" alignment-baseline="hanging" x={xScale(tick)} y={height - margins.bottom + 5}
+				>{customDateToStringMonth(tick)}</text
+			>
+		{:else}
+			<text class="x" alignment-baseline="hanging" x={xScale(tick)} y={height - margins.bottom + 5}
+				>{tick}</text
+			>
+		{/if}
 	{/each}
 
 	<!-- y-axis -->
 	<line x1={margins.left} y1={margins.top} x2={margins.left} y2={height - margins.bottom} />
 	{#each yTicks as tick}
 		<line x1={margins.left - 3} y1={yScale(tick)} x2={margins.left + 3} y2={yScale(tick)} />
-		<text class="y" alignment-baseline="middle" x={margins.left - 5} y={yScale(tick)}>{tick}</text>
+		{#if YisTime}
+			<text class="y" alignment-baseline="middle" x={margins.left - 5} y={yScale(tick)}
+				>{secondsToTimeM(tick)}</text
+			>
+		{:else}
+			<text class="y" alignment-baseline="middle" x={margins.left - 5} y={yScale(tick)}>{tick}</text
+			>
+		{/if}
 	{/each}
 
 	<text x={margins.left} y={margins.top - 20} text-anchor="middle" style="font-size: 16px"

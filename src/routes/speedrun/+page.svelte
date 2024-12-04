@@ -7,6 +7,8 @@
 
 	let pageSize = 200;
 
+	let fetchRes;
+
 	let selectedCategory = 'Category';
 	let categoryList = [];
 	let categoryIds = [];
@@ -61,14 +63,14 @@
 			if (!response.ok) {
 				throw new Error(`Failed to fetch data for ${game}: ${response.statusText}`);
 			}
-			gameData = await response.json();
+			fetchRes = await response.json();
 		} catch (error) {
 			console.error(error);
-			gameData = { error: 'Failed to load data.' };
+			fetchRes = { error: 'Failed to load data.' };
 		} finally {
 			isLoading = false;
 		}
-		return gameData;
+		return fetchRes;
 	}
 
 	async function loadData(game, category) {
@@ -101,7 +103,12 @@
 	function cleanData(data) {
 		var cleanedData = [];
 		for (let i = 0; i < data.length; i++) {
-			cleanedData.push({ id: data[i]['id'], status: data[i]['status']['status'] });
+			cleanedData.push({
+				id: data[i]['id'],
+				status: data[i]['status']['status'],
+				time: data[i]['times']['primary_t'],
+				date: data[i]['date']
+			});
 		}
 		return cleanedData;
 	}
@@ -200,9 +207,20 @@
 		</div>
 		{#if (gameData != null) & !isProcessing}
 			<Piechart width={200} height={200} labels="status" data={gameData} />
-			<!--
-				<Scatterplot width={400} heigth={400} keyX="date" keyY="times.primary_t" data={gameData} />
-			-->
+			<Scatterplot
+				width={400}
+				heigth={400}
+				keyX="date"
+				XisDate={true}
+				keyY="time"
+				tickAmountX={5}
+				tickAmountY={10}
+				labelX="Submission Date"
+				labelY="Time"
+				radius={2}
+				YisTime={true}
+				data={gameData}
+			/>
 		{:else}
 			<div style="width:200px; height:500px; background-color:whitesmoke"></div>
 		{/if}

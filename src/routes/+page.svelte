@@ -26,7 +26,7 @@
 			labelY="Price"
 			restrictTo="Mercedes-Benz"
 			restrictToKey="make"
-			{data}
+			data={data.data}
 		/>
 		<Piechart width={200} height={200} labels="fuel" data={data.data} />
 		<Barchart width={500} height={500} labels="fuel" {data} />
