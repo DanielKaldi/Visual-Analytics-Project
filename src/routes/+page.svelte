@@ -167,6 +167,9 @@
 
 		let game = selectedGame;
 
+		leaderboardPlayers = [];
+		leaderboardTimes = [];
+
 		leaderboardData = await fetchGameData('', false, game, category, true);
 		for (let i = 0; i < 3; i++) {
 			if (!leaderboardData.data.runs[i]) {
