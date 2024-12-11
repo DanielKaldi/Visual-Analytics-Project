@@ -169,6 +169,9 @@
 
 		leaderboardData = await fetchGameData('', false, game, category, true);
 		for (let i = 0; i < 3; i++) {
+			if (!leaderboardData.data.runs[i]) {
+				continue;
+			}
 			let run = leaderboardData.data.runs[i].run;
 			let userDataURL = run.players[0].uri;
 			userData = await fetchGameData(userDataURL, false, null, null, false);
