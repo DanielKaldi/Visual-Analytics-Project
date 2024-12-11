@@ -1,6 +1,9 @@
 <script>
 	let { key, labels, width, height, data } = $props();
 
+	let chartHeight = $state(height / 2);
+	let pieSize = $derived(Math.min(chartHeight, width));
+
 	let cleanData = [];
 	for (let i = 0; i < data.length; i++) {
 		if (data[i][labels] == undefined) {
@@ -54,8 +57,11 @@
 	const colors = ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff'];
 </script>
 
-<div class="container" style="width: {width + 20}px">
-	<svg {width} {height} viewBox="-100 -100 200 200">
+<div
+	class="container flex flex-col items-center justify-evenly border-4"
+	style="width: {width + 20}px; height: {height}px"
+>
+	<svg width={pieSize} height={pieSize} viewBox="-100 -100 200 200">
 		{#each slices as { path, label }, index}
 			<path d={path} fill={colors[index % colors.length]} />
 		{/each}

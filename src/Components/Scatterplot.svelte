@@ -82,7 +82,7 @@
 	}
 </script>
 
-<svg {width} {height}>
+<svg {width} {height} class="border-4">
 	{#each plotData as { x, y }}
 		<circle cx={xScale(x)} cy={yScale(y)} r={radius} />
 	{/each}

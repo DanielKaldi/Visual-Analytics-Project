@@ -79,7 +79,7 @@
 	}
 </script>
 
-<svg {width} {height}>
+<svg {width} {height} class="border-4">
 	<path d={lineGenerator(plotData)} fill="none" stroke="red" stroke-width="2" />
 
 	{#each plotData as { x, y }}
