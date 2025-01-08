@@ -7,6 +7,7 @@
 	import Linegraph from '../Components/Linegraph.svelte';
 	import Barchart from '../Components/Barchart.svelte';
 	import CurrentWr from '../Components/CurrentWR.svelte';
+	import { interpolateGreens } from 'd3';
 
 	let pageSize = 200;
 
@@ -53,6 +54,8 @@
 
 	let sumByMonthData = $state(null);
 
+	let WRProgressionData = $state(null);
+
 	async function fetchGameData(
 		givenUrl,
 		getCategories = false,
@@ -94,7 +97,7 @@
 		} catch (error) {
 			console.error(error);
 			fetchFailed = true;
-			fetchRes = { error: 'Failed to load data.' };
+			fetchRes = { error: 'Failed to load data.', failed: true };
 		} finally {
 			isLoading = false;
 		}
@@ -114,6 +117,9 @@
 			}
 			fetchRes = await fetchGameData(url, false, game, category);
 
+			if (data.length > 0 && fetchRes.failed) {
+				return data;
+			}
 			if (fetchRes == {} || fetchRes.pagination.size < pageSize) {
 				data = data.concat(fetchRes.data);
 				return data;
@@ -188,6 +194,7 @@
 		gameData = replaceIDs(gameData);
 
 		sumByMonthData = await generateSumByMonthData(gameData);
+		WRProgressionData = await generateWRProgressionData(gameData);
 
 		isProcessing = false;
 	}
@@ -243,6 +250,22 @@
 		}
 
 		return res;
+	}
+
+	function generateWRProgressionData(gameData) {
+		let data = [];
+		gameData = gameData.sort((a, b) => a.date - b.date);
+		var currentWR = Infinity;
+		for (let i = 0; i < gameData.length; i++) {
+			if (gameData[i].time < currentWR) {
+				currentWR = gameData[i].time;
+				data.push({ ...gameData[i], date: new Date(gameData[i].date) });
+			}
+		}
+		console.log(data);
+		console.log(sumByMonthData);
+
+		return data;
 	}
 
 	function secondsToTimeMS(time) {
@@ -312,18 +335,18 @@
 						times={leaderboardTimes}
 					/>
 					<Linegraph
-						title="World Record Progression (Placeholder)"
+						title="World Record Progression"
 						keyX="date"
-						keyY="sum"
+						keyY="time"
 						width={(screenWidth * 3) / 8}
 						height={(screenHeight - topBarHeight) / 2}
 						tickAmountX={5}
 						tickAmountY={10}
 						radius={3}
-						labelX="Submission Month"
-						labelY="Nr. of Runs"
+						labelX="Submission Date"
+						labelY="Time"
 						XisDate={true}
-						data={sumByMonthData}
+						data={WRProgressionData}
 					/>
 					<Barchart
 						title="Number of Players who submitted multiple runs (Placeholder)"
