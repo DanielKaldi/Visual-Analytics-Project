@@ -262,8 +262,6 @@
 				data.push({ ...gameData[i], date: new Date(gameData[i].date) });
 			}
 		}
-		console.log(data);
-		console.log(sumByMonthData);
 
 		return data;
 	}
