@@ -22,6 +22,9 @@
 	let categoryList = $state([]);
 	let categoryIds = $state([]);
 
+	let gameDropdownOpen = $state(false);
+	let categoryDropdownOpen = $state(false);
+
 	let leaderboardData = null;
 	let leaderboardPlayers = [];
 	let leaderboardTimes = [];
@@ -49,6 +52,12 @@
 		'om1mx362'
 	];
 	let gameData = $state(null);
+	let gameDataVerified = $state(null);
+	let gameDataAll = $state(null);
+
+	let verifiedOnly = $state(false);
+	let verfiedOnlyButtonText = $state('Show Rejected');
+
 	let isLoading = $state(false);
 	let isProcessing = $state(false);
 
@@ -134,9 +143,12 @@
 	}
 
 	//cleans Data, propably needs to be adjusted
-	function cleanData(data) {
+	async function cleanData(data) {
 		var cleanedData = [];
 		for (let i = 0; i < data.length; i++) {
+			if (data[i]['date'] == null || data[i]['date'] == 0 || data[i]['times']['primary_t'] == 0) {
+				continue;
+			}
 			cleanedData.push({
 				id: data[i]['id'],
 				status: data[i]['status']['status'],
@@ -157,8 +169,10 @@
 	async function setCategories(game) {
 		let fetchData = await fetchGameData('', true, game);
 		fetchData.data.forEach((e) => {
-			categoryList.push(e.name);
-			categoryIds.push(e.id);
+			if (e.name != 'Stage RTA') {
+				categoryList.push(e.name);
+				categoryIds.push(e.id);
+			}
 		});
 	}
 
@@ -190,13 +204,49 @@
 
 		gameData = null;
 		gameData = await loadData(game, category);
-		gameData = cleanData(gameData);
+		gameData = await cleanData(gameData);
 		gameData = replaceIDs(gameData);
 
-		sumByMonthData = await generateSumByMonthData(gameData);
-		WRProgressionData = await generateWRProgressionData(gameData);
+		gameDataAll = await gameData;
+		gameDataVerified = await removeRejected(gameData);
+
+		if (verifiedOnly) {
+			gameData = await gameDataVerified;
+		} else {
+			gameData = await gameDataAll;
+		}
+
+		await regenerateData(gameData);
 
 		isProcessing = false;
+	}
+
+	async function toggleStatus() {
+		verifiedOnly = !verifiedOnly;
+		if (verifiedOnly) {
+			if (gameData) {
+				gameData = await gameDataVerified;
+			}
+			verfiedOnlyButtonText = 'Show Rejected';
+		} else {
+			if (gameData) {
+				gameData = await gameDataAll;
+			}
+			verfiedOnlyButtonText = 'Hide Rejected';
+		}
+
+		if (gameData) {
+			regenerateData(gameData);
+		}
+	}
+
+	async function removeRejected(gameData) {
+		return gameData.filter((obj) => obj.status !== 'rejected');
+	}
+
+	async function regenerateData(gameData) {
+		sumByMonthData = await generateSumByMonthData(gameData);
+		WRProgressionData = await generateWRProgressionData(gameData);
 	}
 
 	async function setGame(game) {
@@ -217,11 +267,16 @@
 		var data = [];
 		for (let i = 0; i < gameData.length; i++) {
 			let date = new Date(gameData[i].date);
+
+			if (date.getFullYear() < 2000) {
+			}
+
 			let yearMonth = new Date(date.getFullYear(), date.getMonth());
 			data.push(yearMonth);
 		}
 
 		let earliestYear = new Date(Math.min(...data)).getFullYear();
+
 		let earliestMonth = new Date(Math.min(...data)).getMonth(); // + 1; in case first 0 month needs to be removed
 
 		let range = [];
@@ -282,14 +337,18 @@
 			<Button
 				class="h-20 w-40 text-black"
 				style="background:#EEEEEE; font-size:20px; border-radius:10px"
+				onclick={() => (gameDropdownOpen = true)}
 				>{selectedGame}<ChevronDownOutline
 					class="ms-2 h-2 w-6 text-white dark:text-white"
 				/></Button
 			>
-			<Dropdown>
+			<Dropdown open={gameDropdownOpen}>
 				{#each gamesList as game}
 					<DropdownItem
-						onclick={() => setGame(game)}
+						onclick={() => {
+							setGame(game);
+							gameDropdownOpen = false;
+						}}
 						class="h-10 w-40"
 						style="background:#EEEEEE; font-size: 16px">{game}</DropdownItem
 					>
@@ -299,19 +358,32 @@
 			<Button
 				class="h-20 w-40 text-black"
 				style="background:#EEEEEE; font-size:20px; border-radius:10px"
+				onclick={() => (categoryDropdownOpen = true)}
 				>{selectedCategory}<ChevronDownOutline
 					class="ms-2 h-2 w-6 text-white dark:text-white"
 				/></Button
 			>
-			<Dropdown>
+			<Dropdown open={categoryDropdownOpen}>
 				{#each categoryList as category}
 					<DropdownItem
-						onclick={() => setCategory(category)}
+						onclick={() => {
+							setCategory(category);
+							categoryDropdownOpen = false;
+						}}
 						class="h-10 w-40"
 						style="background:#EEEEEE; font-size: 16px">{category}</DropdownItem
 					>
 				{/each}
 			</Dropdown>
+
+			<Button
+				class="h-20 w-40 text-black"
+				style="background:#EEEEEE; font-size:20px; border-radius:10px"
+				onclick={() => toggleStatus()}
+				>{verfiedOnlyButtonText}<ChevronDownOutline
+					class="ms-2 h-2 w-6 text-white dark:text-white"
+				/></Button
+			>
 		</div>
 		<h1 style="margin: 10px;">Speedrun Data from Speedrun.com</h1>
 	</div>
@@ -324,7 +396,7 @@
 		{/if}
 	{:else if selectedGame != 'Game'}
 		{#if selectedCategory != 'Category'}
-			{#key [screenHeight, screenWidth]}
+			{#key [screenHeight, screenWidth, gameData]}
 				<div class="flex w-full">
 					<CurrentWr
 						width={(screenWidth * 2) / 8}
@@ -388,7 +460,7 @@
 						width={(screenWidth * 1) / 7}
 						height={(screenHeight - topBarHeight) / 2}
 						labels="status"
-						data={gameData}
+						data={gameDataAll}
 					/>
 				</div>
 			{/key}
