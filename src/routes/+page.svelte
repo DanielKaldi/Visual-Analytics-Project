@@ -8,6 +8,7 @@
 	import Barchart from '../Components/Barchart.svelte';
 	import CurrentWr from '../Components/CurrentWR.svelte';
 	import { interpolateGreens } from 'd3';
+	import GameImage from '../Components/GameImage.svelte';
 
 	let pageSize = 200;
 
@@ -51,6 +52,17 @@
 		'nd2el35d',
 		'om1mx362'
 	];
+	let gamesImages = [
+		'mario64.webp',
+		'SuperMarioOdyssey.webp',
+		'Minecraft.webp',
+		'EldenRing.webp',
+		'Broforce.webp',
+		'GoldenEye007.webp',
+		'CookingMama.webp',
+		'GTAV.webp'
+	];
+
 	let gameData = $state(null);
 	let gameDataVerified = $state(null);
 	let gameDataAll = $state(null);
@@ -169,7 +181,7 @@
 	async function setCategories(game) {
 		let fetchData = await fetchGameData('', true, game);
 		fetchData.data.forEach((e) => {
-			if (e.name != 'Stage RTA') {
+			if (e.name != 'Stage RTA' || !(selectedGame == 'Mario Odyssey' && e.name == 'Any%')) {
 				categoryList.push(e.name);
 				categoryIds.push(e.id);
 			}
@@ -388,6 +400,19 @@
 		<h1 style="margin: 10px;">Speedrun Data from Speedrun.com</h1>
 	</div>
 
+	{#if selectedGame == 'Game'}
+		<div class="grid h-full w-[1530px] grid-cols-4 grid-rows-2">
+			{#each gamesList as name, index}
+				<GameImage
+					onclick={() => setGame(name)}
+					{name}
+					img={gamesImages[index]}
+					id={gamesIDs[index]}
+				/>
+			{/each}
+		</div>
+	{/if}
+
 	{#if isProcessing}
 		{#if fetchFailed}
 			<p>Fetch Request failed</p>
@@ -467,9 +492,7 @@
 		{:else}
 			<p>Select a Category</p>
 		{/if}
-	{:else}
-		<p>Select a Game</p>
-	{/if}
+	{:else}{/if}
 </main>
 
 <style>
