@@ -74,8 +74,8 @@
 	let isProcessing = $state(false);
 
 	let sumByMonthData = $state(null);
-
 	let WRProgressionData = $state(null);
+	let multipleRunData = $state(null);
 
 	async function fetchGameData(
 		givenUrl,
@@ -154,18 +154,22 @@
 		}
 	}
 
-	//cleans Data, propably needs to be adjusted
+	//cleans and formats Data
 	async function cleanData(data) {
 		var cleanedData = [];
 		for (let i = 0; i < data.length; i++) {
 			if (data[i]['date'] == null || data[i]['date'] == 0 || data[i]['times']['primary_t'] == 0) {
 				continue;
 			}
+
+			const playerId =
+				data[i]['players'].length > 0 ? data[i]['players'][0]['id'] : 'placeholderId';
 			cleanedData.push({
 				id: data[i]['id'],
 				status: data[i]['status']['status'],
 				time: data[i]['times']['primary_t'],
-				date: data[i]['date']
+				date: data[i]['date'],
+				player: playerId
 			});
 		}
 		return cleanedData;
@@ -264,6 +268,7 @@
 	async function regenerateData(gameData) {
 		sumByMonthData = await generateSumByMonthData(gameData);
 		WRProgressionData = await generateWRProgressionData(gameData);
+		multipleRunData = await generateMultipleRunData(gameData);
 	}
 
 	async function setGame(game) {
@@ -324,7 +329,7 @@
 		return res;
 	}
 
-	function generateWRProgressionData(gameData) {
+	async function generateWRProgressionData(gameData) {
 		let data = [];
 		gameData = gameData.sort((a, b) => a.date - b.date);
 		var currentWR = Infinity;
@@ -336,6 +341,34 @@
 		}
 
 		return data;
+	}
+
+	async function generateMultipleRunData(gameData) {
+		let res = gameData.reduce((acc, item) => {
+			const existingItem = acc.find((i) => i.player === item.player);
+
+			if (existingItem) {
+				existingItem.nrRuns += 1;
+			} else {
+				acc.push({ player: item.player, nrRuns: 1 });
+			}
+			return acc;
+		}, []);
+
+		res = res.reduce((acc, item) => {
+			const existingItem = acc.find((i) => i.nrRuns === item.nrRuns);
+
+			if (existingItem) {
+				existingItem.nrPlayers += 1;
+			} else {
+				acc.push({ nrRuns: item.nrRuns, nrPlayers: 1 });
+			}
+			return acc;
+		}, []);
+
+		res = res.sort((a, b) => a.nrRuns - b.nrRuns);
+
+		return res;
 	}
 
 	function secondsToTimeMS(time) {
@@ -449,11 +482,12 @@
 						data={WRProgressionData}
 					/>
 					<Barchart
-						title="Number of Players who submitted multiple runs (Placeholder)"
-						labels="status"
+						title="Number of Players who submitted multiple runs"
+						labels="nrRuns"
+						key="nrPlayers"
 						width={(screenWidth * 3) / 8}
 						height={(screenHeight - topBarHeight) / 2}
-						data={gameData}
+						data={multipleRunData}
 					/>
 				</div>
 				<div class="flex w-full">

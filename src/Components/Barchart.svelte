@@ -1,8 +1,13 @@
 <script>
+	//Colors do not work right now. They are set to certain colors of the input array currently
+	//Input is cut off to 15 entries to avoid crashing. The last entry is always shown, to show the highest number of runs of 1 player
 	let { title, key, labels, width, height, data } = $props();
 
 	let cleanData = [];
 	for (let i = 0; i < data.length; i++) {
+		if (i >= 15 && i != data.length - 1) {
+			continue;
+		}
 		if (data[i][labels] == undefined) {
 			continue;
 		}
@@ -48,7 +53,7 @@
 				y={chartHeight - (value / maxValue) * barHeight}
 				width={barWidth}
 				height={(value / maxValue) * barHeight}
-				fill={colors[index]}
+				fill={colors[1]}
 			/>
 			<!-- Values above the bar -->
 			<text
@@ -59,11 +64,12 @@
 				{value}
 			</text>
 			<!-- Labels below the bar -->
+			<!-- y={index % 2 ? chartHeight + 40 : chartHeight + 20} -->
 			<text
 				class="label"
 				x={index * (barWidth + barSpacing) + barWidth / 2}
-				y={index % 2 ? chartHeight + 40 : chartHeight + 20}
-				style="fill: {colors[index]}"
+				y={chartHeight + 30}
+				style="fill: {colors[7]}"
 			>
 				{label}
 			</text>
