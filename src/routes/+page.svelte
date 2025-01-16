@@ -180,12 +180,17 @@
 
 	async function setCategories(game) {
 		let fetchData = await fetchGameData('', true, game);
-		fetchData.data.forEach((e) => {
-			if (e.name != 'Stage RTA' || !(selectedGame == 'Mario Odyssey' && e.name == 'Any%')) {
-				categoryList.push(e.name);
-				categoryIds.push(e.id);
+		for (let i = 0; i < fetchData.data.length; i++) {
+			if (selectedGame == 'Super Mario 64') {
+				if (fetchData.data[i].name == 'Stage RTA') continue;
 			}
-		});
+			if (selectedGame == 'Mario Odyssey') {
+				if (fetchData.data[i].name == 'Any%') continue;
+			}
+
+			categoryList.push(fetchData.data[i].name);
+			categoryIds.push(fetchData.data[i].id);
+		}
 	}
 
 	async function setCategory(category) {
