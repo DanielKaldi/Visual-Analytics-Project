@@ -122,7 +122,7 @@
 		>{labelY}</text
 	>
 	<text
-		x={width - margins.right}
+		x={width - margins.right - 40}
 		y={height - margins.bottom + 35}
 		text-anchor="middle"
 		style="font-size: 16px">{labelX}</text

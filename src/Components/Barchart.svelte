@@ -1,7 +1,7 @@
 <script>
 	//Colors do not work right now. They are set to certain colors of the input array currently
 	//Input is cut off to 15 entries to avoid crashing. The last entry is always shown, to show the highest number of runs of 1 player
-	let { title, key, labels, width, height, data } = $props();
+	let { title, key, labels, width, height, data, xAxisLabel, yAxisLabel } = $props();
 
 	let cleanData = [];
 	for (let i = 0; i < data.length; i++) {
@@ -74,6 +74,14 @@
 				{label}
 			</text>
 		{/each}
+		<!-- X-axis label -->
+		<text class="label" x={width / 2} y={chartHeight + 50} text-anchor="middle">
+			{xAxisLabel}
+		</text>
+		<!-- Y-axis label -->
+		<text class="label" x={-height / 2} y={-20} transform="rotate(-90)" text-anchor="middle">
+			{yAxisLabel}
+		</text>
 	</svg>
 </div>
 

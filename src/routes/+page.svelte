@@ -487,6 +487,8 @@
 						key="nrPlayers"
 						width={(screenWidth * 3) / 8}
 						height={(screenHeight - topBarHeight) / 2}
+						xAxisLabel="Number of Runs"
+						yAxisLabel="Number of Players"
 						data={multipleRunData}
 					/>
 				</div>
