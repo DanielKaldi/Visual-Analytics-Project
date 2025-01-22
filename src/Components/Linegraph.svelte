@@ -2,6 +2,7 @@
 	import { scaleLinear } from 'd3-scale';
 	import { extent } from 'd3-array';
 	import { line, curveLinear } from 'd3-shape';
+	//import log from 'd3-scale/src/log';
 
 	let {
 		title = '',
@@ -18,6 +19,8 @@
 		restrictToKey,
 		avgY,
 		XisDate = false,
+		rejectedColor,
+		verifiedColor,
 		data
 	} = $props();
 
@@ -29,10 +32,14 @@
 			continue;
 		}
 
-		restrictedData.push({ x: Number(data[i][keyX]), y: Number(data[i][keyY]) });
+		restrictedData.push({
+			x: Number(data[i][keyX]),
+			y: Number(data[i][keyY]),
+			status: data[i].status
+		});
 	}
 
-	var plotData;
+	var plotData = $state();
 	if (avgY) {
 		plotData = restrictedData.reduce((acc, item) => {
 			const existingItem = acc.find((i) => i.x === item.x);
@@ -80,10 +87,14 @@
 </script>
 
 <svg {width} {height} class="border-4">
-	<path d={lineGenerator(plotData)} fill="none" stroke="red" stroke-width="2" />
+	<path d={lineGenerator(plotData)} fill="none" stroke={verifiedColor} stroke-width="2" />
 
-	{#each plotData as { x, y }}
-		<circle cx={xScale(x)} cy={yScale(y)} r={radius} />
+	{#each plotData as { x, y, status }}
+		{#if status == 'rejected'}
+			<circle cx={xScale(x)} cy={yScale(y)} r={radius} fill={rejectedColor} />
+		{:else}
+			<circle cx={xScale(x)} cy={yScale(y)} r={radius} fill={verifiedColor} />
+		{/if}
 	{/each}
 
 	<!-- x-axis -->
@@ -139,10 +150,10 @@
 	svg {
 		background-color: whitesmoke;
 	}
-	circle {
+	/*circle {
 		opacity: 0.8;
 		fill: red;
-	}
+	}*/
 	path {
 		opacity: 0.8;
 	}

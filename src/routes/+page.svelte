@@ -10,6 +10,9 @@
 	import { interpolateGreens } from 'd3';
 	import GameImage from '../Components/GameImage.svelte';
 
+	const rejectedColor = '#ff6384';
+	const verifiedColor = '#36a2eb';
+
 	let pageSize = 200;
 
 	let screenWidth = $state(1920);
@@ -67,7 +70,7 @@
 	let gameDataVerified = $state(null);
 	let gameDataAll = $state(null);
 
-	let verifiedOnly = $state(false);
+	let verifiedOnly = $state(true);
 	let verfiedOnlyButtonText = $state('Show Rejected');
 
 	let isLoading = $state(false);
@@ -237,13 +240,25 @@
 			gameData = await gameDataAll;
 		}
 
-		await regenerateData(gameData);
+		gameData = await regenerateData(gameData);
 
 		isProcessing = false;
 	}
 
 	async function toggleStatus() {
 		verifiedOnly = !verifiedOnly;
+
+		if (gameData) {
+			gameData = await regenerateData(gameData, verifiedOnly);
+		}
+	}
+
+	async function removeRejected(gameData) {
+		return gameData.filter((obj) => obj.status !== 'rejected');
+	}
+
+	async function regenerateData(gameData, verifiedOnly = true) {
+		console.log(verifiedOnly);
 		if (verifiedOnly) {
 			if (gameData) {
 				gameData = await gameDataVerified;
@@ -256,19 +271,11 @@
 			verfiedOnlyButtonText = 'Hide Rejected';
 		}
 
-		if (gameData) {
-			regenerateData(gameData);
-		}
-	}
-
-	async function removeRejected(gameData) {
-		return gameData.filter((obj) => obj.status !== 'rejected');
-	}
-
-	async function regenerateData(gameData) {
 		sumByMonthData = await generateSumByMonthData(gameData);
 		WRProgressionData = await generateWRProgressionData(gameData);
 		multipleRunData = await generateMultipleRunData(gameData);
+
+		return gameData;
 	}
 
 	async function setGame(game) {
@@ -479,6 +486,8 @@
 						labelX="Submission Date"
 						labelY="Time"
 						XisDate={true}
+						{rejectedColor}
+						{verifiedColor}
 						data={WRProgressionData}
 					/>
 					<Barchart
@@ -504,9 +513,11 @@
 						tickAmountY={10}
 						labelX="Submission Date"
 						labelY="Time"
-						radius={2}
+						radius={3}
 						YisTime={true}
 						data={gameData}
+						{rejectedColor}
+						{verifiedColor}
 					/>
 					<Linegraph
 						title="Number of Submissions by Month"
@@ -520,12 +531,16 @@
 						labelX="Submission Month"
 						labelY="Nr. of Runs"
 						XisDate={true}
+						{rejectedColor}
+						{verifiedColor}
 						data={sumByMonthData}
 					/>
 					<Piechart
 						width={(screenWidth * 1) / 7}
 						height={(screenHeight - topBarHeight) / 2}
 						labels="status"
+						{rejectedColor}
+						{verifiedColor}
 						data={gameDataAll}
 					/>
 				</div>

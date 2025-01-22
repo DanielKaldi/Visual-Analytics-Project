@@ -1,5 +1,5 @@
 <script>
-	let { key, labels, width, height, data } = $props();
+	let { key, labels, width, height, rejectedColor, verifiedColor, data } = $props();
 
 	let chartHeight = $state(height / 2);
 	let pieSize = $derived(Math.min(chartHeight, width));
@@ -63,7 +63,11 @@
 >
 	<svg width={pieSize} height={pieSize} viewBox="-100 -100 200 200">
 		{#each slices as { path, label }, index}
-			<path d={path} fill={colors[index % colors.length]} />
+			{#if label == 'rejected'}
+				<path d={path} fill={rejectedColor} />
+			{:else}
+				<path d={path} fill={verifiedColor} />
+			{/if}
 		{/each}
 	</svg>
 
@@ -71,9 +75,15 @@
 		<h3>Legend</h3>
 		<ul>
 			{#each plotData as { label, value }, index}
-				<li class="label" style="color: {colors[index % colors.length]}">
-					{label}: {value}
-				</li>
+				{#if label == 'rejected'}
+					<li class="label" style="color: {rejectedColor}">
+						{label}: {value}
+					</li>
+				{:else}
+					<li class="label" style="color: {verifiedColor}">
+						{label}: {value}
+					</li>
+				{/if}
 			{/each}
 		</ul>
 	</div>

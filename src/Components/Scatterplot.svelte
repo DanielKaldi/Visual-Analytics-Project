@@ -18,7 +18,9 @@
 		data,
 		XisDate = false,
 		YisDate = false,
-		YisTime = false
+		YisTime = false,
+		rejectedColor = '#ff6384',
+		verifiedColor = '#36a2eb'
 	} = $props();
 
 	let margins = { left: 50, top: 50, bottom: 50, right: 50 };
@@ -44,7 +46,7 @@
 			yData = Number(data[i][keyY]);
 		}
 
-		plotData.push({ x: Number(xData), y: Number(yData) });
+		plotData.push({ x: Number(xData), y: Number(yData), status: data[i].status });
 	}
 
 	let xDomain = extent(plotData, (d) => d.x);
@@ -83,8 +85,12 @@
 </script>
 
 <svg {width} {height} class="border-4">
-	{#each plotData as { x, y }}
-		<circle cx={xScale(x)} cy={yScale(y)} r={radius} />
+	{#each plotData as { x, y, status }}
+		{#if status == 'rejected'}
+			<circle cx={xScale(x)} cy={yScale(y)} r={radius} fill={rejectedColor} />
+		{:else}
+			<circle cx={xScale(x)} cy={yScale(y)} r={radius} fill={verifiedColor} />
+		{/if}
 	{/each}
 
 	<!-- x-axis -->
@@ -147,11 +153,11 @@
 	svg {
 		background-color: whitesmoke;
 	}
-	circle {
+	/*circle {
 		opacity: 0.5;
 		stroke: red;
 		fill: red;
-	}
+	}*/
 	line {
 		stroke: black;
 	}
