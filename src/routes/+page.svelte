@@ -258,7 +258,6 @@
 	}
 
 	async function regenerateData(gameData, verifiedOnly = true) {
-		console.log(verifiedOnly);
 		if (verifiedOnly) {
 			if (gameData) {
 				gameData = await gameDataVerified;
@@ -546,7 +545,19 @@
 				</div>
 			{/key}
 		{:else}
-			<p>Select a Category</p>
+			<div class="grid h-full w-full grid-rows-2">
+				{#each categoryList as name, index}
+					<GameImage
+						onclick={() => setCategory(name)}
+						{name}
+						id={categoryIds[index]}
+						smallText={selectedGame == 'Grand Theft Auto V' ? true : false}
+					/>
+				{/each}
+			</div>
+			<!--
+				<p>Select a Category</p>
+			-->
 		{/if}
 	{:else}{/if}
 </main>
