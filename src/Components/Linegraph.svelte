@@ -117,6 +117,10 @@
 
 		return `${minutes} min`;
 	}
+
+	function secondsToTimeS(time) {
+		return `${time}s`;
+	}
 </script>
 
 <svg {width} {height} class="border-4">
@@ -177,7 +181,11 @@
 	{#each yTicks as tick}
 		<line x1={margins.left - 3} y1={yScale(tick)} x2={margins.left + 3} y2={yScale(tick)} />
 		<text class="y" alignment-baseline="middle" x={margins.left - 5} y={yScale(tick)}
-			>{keyY == 'time' ? secondsToTimeM(tick) : tick}</text
+			>{keyY == 'time'
+				? yTicks[yTicks.length - 1] > 120
+					? secondsToTimeM(tick)
+					: secondsToTimeS(tick)
+				: tick}</text
 		>
 	{/each}
 

@@ -89,6 +89,10 @@
 		return `${minutes} min`;
 	}
 
+	function secondsToTimeS(time) {
+		return `${time}s`;
+	}
+
 	function customDateToStringMonth(date) {
 		date = new Date(date);
 		return `${date.getFullYear()}-${date.getMonth()}`;
@@ -164,7 +168,7 @@
 		<line x1={margins.left - 3} y1={yScale(tick)} x2={margins.left + 3} y2={yScale(tick)} />
 		{#if YisTime}
 			<text class="y" alignment-baseline="middle" x={margins.left - 5} y={yScale(tick)}
-				>{secondsToTimeM(tick)}</text
+				>{yTicks[yTicks.length - 1] > 120 ? secondsToTimeM(tick) : secondsToTimeS(tick)}</text
 			>
 		{:else}
 			<text class="y" alignment-baseline="middle" x={margins.left - 5} y={yScale(tick)}>{tick}</text
