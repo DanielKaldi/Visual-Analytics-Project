@@ -13,6 +13,9 @@
 	const rejectedColor = '#ff6384';
 	const verifiedColor = '#36a2eb';
 
+	const rejectedColorFocus = '#ff1a4b';
+	const verifiedColorFocus = '#1068a2';
+
 	let pageSize = 200;
 
 	let screenWidth = $state(1920);
@@ -69,6 +72,8 @@
 	let gameData = $state(null);
 	let gameDataVerified = $state(null);
 	let gameDataAll = $state(null);
+
+	let selectedPoints = $state([]);
 
 	let verifiedOnly = $state(true);
 	let verfiedOnlyButtonText = $state('Show Rejected');
@@ -229,7 +234,8 @@
 		gameData = null;
 		gameData = await loadData(game, category);
 		gameData = await cleanData(gameData);
-		gameData = replaceIDs(gameData);
+		gameData = await replaceIDs(gameData);
+		gameData = await indexData(gameData);
 
 		gameDataAll = await gameData;
 		gameDataVerified = await removeRejected(gameData);
@@ -243,6 +249,13 @@
 		gameData = await regenerateData(gameData);
 
 		isProcessing = false;
+	}
+
+	async function indexData(data) {
+		for (let i = 0; i < data.length; i++) {
+			data[i] = { ...data[i], index: i + 1 }; //index 0 is forbidden
+		}
+		return data;
 	}
 
 	async function toggleStatus() {
@@ -300,12 +313,12 @@
 			}
 
 			let yearMonth = new Date(date.getFullYear(), date.getMonth());
-			data.push(yearMonth);
+			data.push({ yearMonth, index: gameData[i].index });
 		}
 
-		let earliestYear = new Date(Math.min(...data)).getFullYear();
+		let earliestYear = new Date(Math.min(...data.map((d) => d.yearMonth))).getFullYear();
 
-		let earliestMonth = new Date(Math.min(...data)).getMonth(); // + 1; in case first 0 month needs to be removed
+		let earliestMonth = new Date(...data.map((d) => d.yearMonth)).getMonth(); // + 1; in case first 0 month needs to be removed
 
 		let range = [];
 		for (let i = earliestYear; i < new Date().getFullYear() + 1; i++) {
@@ -313,23 +326,27 @@
 			if (i == new Date().getFullYear()) {
 				nrMonth = new Date().getMonth() + 1;
 			}
-			let startMonth = 1;
+			let startMonth = 0;
 			if (i == earliestYear) {
 				startMonth = earliestMonth;
 			}
 			for (let k = startMonth; k < nrMonth + 1; k++) {
-				range.push(new Date(i, k - 1));
+				range.push(new Date(i, k));
 			}
 		}
 
 		let res = [];
 		for (let i = 0; i < range.length; i++) {
 			let sum = 0;
+			let indices = [];
 			let elems = data.filter(
-				(e) => e.getFullYear() == range[i].getFullYear() && e.getMonth() == range[i].getMonth()
+				(e) =>
+					e.yearMonth.getFullYear() == range[i].getFullYear() &&
+					e.yearMonth.getMonth() == range[i].getMonth()
 			);
 			sum = elems.length;
-			res.push({ date: range[i], sum: sum });
+			indices = elems.map((e) => e.index);
+			res.push({ date: range[i], sum: sum, index: indices });
 		}
 
 		return res;
@@ -487,6 +504,10 @@
 						XisDate={true}
 						{rejectedColor}
 						{verifiedColor}
+						{rejectedColorFocus}
+						{verifiedColorFocus}
+						onClick={(index) => (selectedPoints = index)}
+						{selectedPoints}
 						data={WRProgressionData}
 					/>
 					<Barchart
@@ -532,6 +553,10 @@
 						XisDate={true}
 						{rejectedColor}
 						{verifiedColor}
+						{rejectedColorFocus}
+						{verifiedColorFocus}
+						onClick={(index) => (selectedPoints = index)}
+						{selectedPoints}
 						data={sumByMonthData}
 					/>
 					<Piechart

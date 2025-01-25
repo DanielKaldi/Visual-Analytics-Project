@@ -2,8 +2,6 @@
 	import { scaleLinear } from 'd3-scale';
 	import { extent } from 'd3-array';
 	import { line, curveLinear } from 'd3-shape';
-	//import log from 'd3-scale/src/log';
-
 	let {
 		title = '',
 		keyX,
@@ -21,6 +19,10 @@
 		XisDate = false,
 		rejectedColor,
 		verifiedColor,
+		rejectedColorFocus,
+		verifiedColorFocus,
+		selectedPoints,
+		onClick,
 		data
 	} = $props();
 
@@ -35,7 +37,8 @@
 		restrictedData.push({
 			x: Number(data[i][keyX]),
 			y: Number(data[i][keyY]),
-			status: data[i].status
+			status: data[i].status,
+			index: data[i].index
 		});
 	}
 
@@ -84,17 +87,52 @@
 		date = new Date(date);
 		return `${date.getFullYear()}-${date.getMonth()}`;
 	}
+
+	function handleClick(e) {
+		let indexString = e.target.getAttribute('myIndex');
+
+		let index = indexString.split(',').map(Number);
+
+		onClick(index);
+	}
+
+	function isContained(index) {
+		if (keyY == 'sum') {
+			for (let i = 0; i < selectedPoints.length; i++) {
+				let point = selectedPoints[i];
+
+				if (index.includes(point)) {
+					return true;
+				}
+			}
+		} else {
+			return selectedPoints?.includes(index);
+		}
+	}
 </script>
 
 <svg {width} {height} class="border-4">
 	<path d={lineGenerator(plotData)} fill="none" stroke={verifiedColor} stroke-width="2" />
 
-	{#each plotData as { x, y, status }}
-		{#if status == 'rejected'}
-			<circle cx={xScale(x)} cy={yScale(y)} r={radius} fill={rejectedColor} />
-		{:else}
-			<circle cx={xScale(x)} cy={yScale(y)} r={radius} fill={verifiedColor} />
-		{/if}
+	{#each plotData as { x, y, status, index }}
+		<circle
+			class={`${status ? status : 'verified'} ${isContained(index) ? ' focus' : ''}`}
+			cx={xScale(x)}
+			cy={yScale(y)}
+			r={isContained(index) ? radius + 2 : radius}
+			fill={status == 'rejected'
+				? isContained(index)
+					? rejectedColorFocus
+					: rejectedColor
+				: isContained(index)
+					? verifiedColorFocus
+					: verifiedColor}
+			myIndex={index}
+			tabindex="0"
+			role="button"
+			onclick={handleClick}
+			onkeydown={() => {}}
+		/>
 	{/each}
 
 	<!-- x-axis -->
@@ -150,10 +188,25 @@
 	svg {
 		background-color: whitesmoke;
 	}
-	/*circle {
-		opacity: 0.8;
-		fill: red;
-	}*/
+	circle {
+		outline: none;
+	}
+	circle.rejected:hover {
+		r: 5;
+		fill: #ff1a4b;
+	}
+	circle.verified:hover {
+		r: 5;
+		fill: #1068a2;
+	}
+	circle.rejected.focus {
+		r: 5;
+		fill: #ff1a4b;
+	}
+	circle.verified.focus {
+		r: 5;
+		fill: #1068a2;
+	}
 	path {
 		opacity: 0.8;
 	}
