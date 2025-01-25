@@ -318,7 +318,7 @@
 
 		let earliestYear = new Date(Math.min(...data.map((d) => d.yearMonth))).getFullYear();
 
-		let earliestMonth = new Date(...data.map((d) => d.yearMonth)).getMonth(); // + 1; in case first 0 month needs to be removed
+		let earliestMonth = new Date(Math.min(...data.map((d) => d.yearMonth))).getMonth(); // + 1; in case first 0 month needs to be removed
 
 		let range = [];
 		for (let i = earliestYear; i < new Date().getFullYear() + 1; i++) {
@@ -372,8 +372,9 @@
 
 			if (existingItem) {
 				existingItem.nrRuns += 1;
+				existingItem.index.push(item.index);
 			} else {
-				acc.push({ player: item.player, nrRuns: 1 });
+				acc.push({ player: item.player, nrRuns: 1, index: [item.index] });
 			}
 			return acc;
 		}, []);
@@ -383,8 +384,9 @@
 
 			if (existingItem) {
 				existingItem.nrPlayers += 1;
+				existingItem.index.push(...item.index);
 			} else {
-				acc.push({ nrRuns: item.nrRuns, nrPlayers: 1 });
+				acc.push({ nrRuns: item.nrRuns, nrPlayers: 1, index: item.index });
 			}
 			return acc;
 		}, []);
@@ -518,6 +520,12 @@
 						height={(screenHeight - topBarHeight) / 2}
 						xAxisLabel="Number of Runs"
 						yAxisLabel="Number of Players"
+						{rejectedColor}
+						{verifiedColor}
+						{rejectedColorFocus}
+						{verifiedColorFocus}
+						onClick={(index) => (selectedPoints = index)}
+						{selectedPoints}
 						data={multipleRunData}
 					/>
 				</div>
@@ -538,6 +546,10 @@
 						data={gameData}
 						{rejectedColor}
 						{verifiedColor}
+						{rejectedColorFocus}
+						{verifiedColorFocus}
+						onClick={(index) => (selectedPoints = index)}
+						{selectedPoints}
 					/>
 					<Linegraph
 						title="Number of Submissions by Month"
@@ -565,6 +577,10 @@
 						labels="status"
 						{rejectedColor}
 						{verifiedColor}
+						{rejectedColorFocus}
+						{verifiedColorFocus}
+						onClick={(index) => (selectedPoints = index)}
+						{selectedPoints}
 						data={gameDataAll}
 					/>
 				</div>

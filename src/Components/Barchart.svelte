@@ -1,7 +1,22 @@
 <script>
 	//Colors do not work right now. They are set to certain colors of the input array currently
 	//Input is cut off to 15 entries to avoid crashing. The last entry is always shown, to show the highest number of runs of 1 player
-	let { title, key, labels, width, height, data, xAxisLabel, yAxisLabel } = $props();
+	let {
+		title,
+		key,
+		labels,
+		width,
+		height,
+		data,
+		xAxisLabel,
+		yAxisLabel,
+		verifiedColor,
+		rejectedColor,
+		rejectedColorFocus,
+		verifiedColorFocus,
+		onClick,
+		selectedPoints
+	} = $props();
 
 	let cleanData = [];
 	for (let i = 0; i < data.length; i++) {
@@ -17,7 +32,7 @@
 		} else {
 			val = data[i][key];
 		}
-		cleanData.push({ value: val, label: data[i][labels] });
+		cleanData.push({ value: val, label: data[i][labels], index: data[i].index });
 	}
 
 	const plotData = cleanData.reduce((acc, item) => {
@@ -25,8 +40,9 @@
 
 		if (existingItem) {
 			existingItem.value += item.value;
+			existingItem.myIndex.concat(item.index);
 		} else {
-			acc.push({ label: item.label, value: item.value });
+			acc.push({ label: item.label, value: item.value, myIndex: item.index });
 		}
 		return acc;
 	}, []);
@@ -38,6 +54,24 @@
 	const chartHeight = height;
 	const colors = ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff'];
 	const barHeight = height - 50;
+
+	function handleClick(e) {
+		let indexString = e.target.getAttribute('myIndex');
+
+		let index = indexString.split(',').map(Number);
+
+		onClick(index);
+	}
+
+	function isContained(index) {
+		for (let i = 0; i < selectedPoints.length; i++) {
+			let point = selectedPoints[i];
+
+			if (index.includes(point)) {
+				return true;
+			}
+		}
+	}
 </script>
 
 <div style="width: {width}px; height: {height}px" class="container border-4">
@@ -46,14 +80,19 @@
 			>{title}</text
 		>
 		<!--Bars-->
-		{#each plotData as { label, value }, index}
+		{#each plotData as { label, value, myIndex }, index}
 			<rect
 				class="bar"
 				x={index * (barWidth + barSpacing)}
 				y={chartHeight - (value / maxValue) * barHeight}
 				width={barWidth}
 				height={(value / maxValue) * barHeight}
-				fill={colors[1]}
+				fill={isContained(myIndex) ? verifiedColorFocus : verifiedColor}
+				{myIndex}
+				tabindex="0"
+				role="button"
+				onclick={handleClick}
+				onkeydown={() => {}}
 			/>
 			<!-- Values above the bar -->
 			<text
@@ -106,5 +145,8 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+	rect {
+		outline: none;
 	}
 </style>

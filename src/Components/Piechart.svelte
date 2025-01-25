@@ -1,5 +1,19 @@
 <script>
-	let { key, labels, width, height, rejectedColor, verifiedColor, data } = $props();
+	import { index } from 'd3';
+
+	let {
+		key,
+		labels,
+		width,
+		height,
+		rejectedColor,
+		verifiedColor,
+		rejectedColorFocus,
+		verifiedColorFocus,
+		onClick,
+		selectedPoints,
+		data
+	} = $props();
 
 	let chartHeight = $state(height / 2);
 	let pieSize = $derived(Math.min(chartHeight, width));
@@ -15,7 +29,7 @@
 		} else {
 			val = data[i][key];
 		}
-		cleanData.push({ value: val, label: data[i][labels] });
+		cleanData.push({ value: val, label: data[i][labels], index: data[i].index });
 	}
 
 	const plotData = cleanData.reduce((acc, item) => {
@@ -23,8 +37,9 @@
 
 		if (existingItem) {
 			existingItem.value += item.value;
+			existingItem.index.push(item.index);
 		} else {
-			acc.push({ label: item.label, value: item.value });
+			acc.push({ label: item.label, value: item.value, index: [item.index] });
 		}
 		return acc;
 	}, []);
@@ -50,11 +65,30 @@
 		return {
 			path: `M 0 0 L ${x1} ${y1} A 100 100 0 ${largeArc} 1 ${x2} ${y2} Z`,
 			label: item.label,
-			value: item.value
+			value: item.value,
+			index: item.index
 		};
 	});
 
 	const colors = ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff'];
+
+	function handleClick(e) {
+		let indexString = e.target.getAttribute('myIndex');
+
+		let index = indexString.split(',').map(Number);
+
+		onClick(index);
+	}
+
+	function isContained(index) {
+		for (let i = 0; i < selectedPoints.length; i++) {
+			let point = selectedPoints[i];
+
+			if (index.includes(point)) {
+				return true;
+			}
+		}
+	}
 </script>
 
 <div
@@ -62,11 +96,27 @@
 	style="width: {width + 20}px; height: {height}px"
 >
 	<svg width={pieSize} height={pieSize} viewBox="-100 -100 200 200">
-		{#each slices as { path, label }, index}
+		{#each slices as { path, label, index }}
 			{#if label == 'rejected'}
-				<path d={path} fill={rejectedColor} />
+				<path
+					d={path}
+					fill={isContained(index) ? rejectedColorFocus : rejectedColor}
+					myIndex={index}
+					tabindex="0"
+					role="button"
+					onclick={handleClick}
+					onkeydown={() => {}}
+				/>
 			{:else}
-				<path d={path} fill={verifiedColor} />
+				<path
+					d={path}
+					fill={isContained(index) ? verifiedColorFocus : verifiedColor}
+					myIndex={index}
+					tabindex="0"
+					role="button"
+					onclick={handleClick}
+					onkeydown={() => {}}
+				/>
 			{/if}
 		{/each}
 	</svg>
@@ -74,7 +124,7 @@
 	<div>
 		<h3>Legend</h3>
 		<ul>
-			{#each plotData as { label, value }, index}
+			{#each plotData as { label, value, index }}
 				{#if label == 'rejected'}
 					<li class="label" style="color: {rejectedColor}">
 						{label}: {value}
@@ -101,5 +151,8 @@
 	.container {
 		background-color: whitesmoke;
 		padding: 10px;
+	}
+	path {
+		outline: none;
 	}
 </style>

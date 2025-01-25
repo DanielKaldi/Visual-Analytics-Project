@@ -1,6 +1,6 @@
 <script>
 	import { scaleLinear } from 'd3-scale';
-	import { extent } from 'd3-array';
+	import { extent, index } from 'd3-array';
 
 	let {
 		title = '',
@@ -20,7 +20,11 @@
 		YisDate = false,
 		YisTime = false,
 		rejectedColor = '#ff6384',
-		verifiedColor = '#36a2eb'
+		verifiedColor = '#36a2eb',
+		rejectedColorFocus,
+		verifiedColorFocus,
+		onClick,
+		selectedPoints
 	} = $props();
 
 	let margins = { left: 50, top: 50, bottom: 50, right: 50 };
@@ -46,7 +50,12 @@
 			yData = Number(data[i][keyY]);
 		}
 
-		plotData.push({ x: Number(xData), y: Number(yData), status: data[i].status });
+		plotData.push({
+			x: Number(xData),
+			y: Number(yData),
+			status: data[i].status,
+			index: data[i].index
+		});
 	}
 
 	let xDomain = extent(plotData, (d) => d.x);
@@ -82,15 +91,39 @@
 		date = new Date(date);
 		return `${date.getFullYear()}-${date.getMonth()}`;
 	}
+
+	function isContained(index) {
+		return selectedPoints?.includes(index);
+	}
+
+	function handleClick(e) {
+		let indexString = e.target.getAttribute('myIndex');
+
+		let index = indexString.split(',').map(Number);
+
+		onClick(index);
+	}
 </script>
 
 <svg {width} {height} class="border-4">
-	{#each plotData as { x, y, status }}
-		{#if status == 'rejected'}
-			<circle cx={xScale(x)} cy={yScale(y)} r={radius} fill={rejectedColor} />
-		{:else}
-			<circle cx={xScale(x)} cy={yScale(y)} r={radius} fill={verifiedColor} />
-		{/if}
+	{#each plotData as { x, y, status, index }}
+		<circle
+			cx={xScale(x)}
+			cy={yScale(y)}
+			r={isContained(index) ? radius + 2 : radius}
+			fill={status == 'rejected'
+				? isContained(index)
+					? rejectedColorFocus
+					: rejectedColor
+				: isContained(index)
+					? verifiedColorFocus
+					: verifiedColor}
+			myIndex={index}
+			tabindex="0"
+			role="button"
+			onclick={handleClick}
+			onkeydown={() => {}}
+		/>
 	{/each}
 
 	<!-- x-axis -->
@@ -153,11 +186,9 @@
 	svg {
 		background-color: whitesmoke;
 	}
-	/*circle {
-		opacity: 0.5;
-		stroke: red;
-		fill: red;
-	}*/
+	circle {
+		outline: none;
+	}
 	line {
 		stroke: black;
 	}
