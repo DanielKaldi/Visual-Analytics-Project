@@ -394,7 +394,6 @@
 	async function generateWRProgressionData(gameData) {
 		let data = [];
 		gameData = await gameData.sort((a, b) => new Date(a.date) - new Date(b.date));
-		console.log(gameData);
 		var currentWR = Infinity;
 		for (let i = 0; i < gameData.length; i++) {
 			if (gameData[i].time < currentWR) {
