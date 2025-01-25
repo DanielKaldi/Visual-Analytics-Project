@@ -408,59 +408,71 @@
 
 <main class="h-full w-full">
 	<div class="flex w-full items-center justify-center border-4" style="height: {topBarHeight}px;">
-		<div class="absolute left-5 z-10 flex gap-5">
-			<Button
-				class="h-20 w-40 text-black"
-				style="background:#EEEEEE; font-size:20px; border-radius:10px"
-				onclick={() => (gameDropdownOpen = true)}
-				>{selectedGame}<ChevronDownOutline
-					class="ms-2 h-2 w-6 text-white dark:text-white"
-				/></Button
-			>
-			<Dropdown open={gameDropdownOpen}>
-				{#each gamesList as game}
-					<DropdownItem
-						onclick={() => {
-							setGame(game);
-							gameDropdownOpen = false;
-						}}
-						class="h-10 w-40"
-						style="background:#EEEEEE; font-size: 16px">{game}</DropdownItem
-					>
-				{/each}
-			</Dropdown>
+		<div class="absolute z-10 flex w-full justify-between gap-5">
+			<div class="ml-5">
+				<Button
+					class="h-20 w-40 text-black"
+					style="background:#EEEEEE; font-size:20px; border-radius:10px"
+					onclick={() => (gameDropdownOpen = true)}
+					>{selectedGame}<ChevronDownOutline
+						class="ms-2 h-2 w-6 text-white dark:text-white"
+					/></Button
+				>
+				<Dropdown open={gameDropdownOpen}>
+					{#each gamesList as game}
+						<DropdownItem
+							onclick={() => {
+								setGame(game);
+								gameDropdownOpen = false;
+							}}
+							class="h-10 w-40"
+							style="background:#EEEEEE; font-size: 16px">{game}</DropdownItem
+						>
+					{/each}
+				</Dropdown>
 
-			<Button
-				class="h-20 w-40 text-black"
-				style="background:#EEEEEE; font-size:20px; border-radius:10px"
-				onclick={() => (categoryDropdownOpen = true)}
-				>{selectedCategory}<ChevronDownOutline
-					class="ms-2 h-2 w-6 text-white dark:text-white"
-				/></Button
-			>
-			<Dropdown open={categoryDropdownOpen}>
-				{#each categoryList as category}
-					<DropdownItem
-						onclick={() => {
-							setCategory(category);
-							categoryDropdownOpen = false;
-						}}
-						class="h-10 w-40"
-						style="background:#EEEEEE; font-size: 16px">{category}</DropdownItem
-					>
-				{/each}
-			</Dropdown>
+				<Button
+					class="h-20 w-40 text-black"
+					style="background:#EEEEEE; font-size:20px; border-radius:10px"
+					onclick={() => (categoryDropdownOpen = true)}
+					>{selectedCategory}<ChevronDownOutline
+						class="ms-2 h-2 w-6 text-white dark:text-white"
+					/></Button
+				>
+				<Dropdown open={categoryDropdownOpen}>
+					{#each categoryList as category}
+						<DropdownItem
+							onclick={() => {
+								setCategory(category);
+								categoryDropdownOpen = false;
+							}}
+							class="h-10 w-40"
+							style="background:#EEEEEE; font-size: 16px">{category}</DropdownItem
+						>
+					{/each}
+				</Dropdown>
+			</div>
+			<h1 style="margin: 10px;">Speedrun Data from Speedrun.com</h1>
+			<div class="mr-5">
+				<Button
+					class="h-20 w-40 text-black"
+					style="background:#EEEEEE; font-size:20px; border-radius:10px"
+					onclick={() => toggleStatus()}
+					>{verfiedOnlyButtonText}<ChevronDownOutline
+						class="ms-2 h-2 w-6 text-white dark:text-white"
+					/></Button
+				>
 
-			<Button
-				class="h-20 w-40 text-black"
-				style="background:#EEEEEE; font-size:20px; border-radius:10px"
-				onclick={() => toggleStatus()}
-				>{verfiedOnlyButtonText}<ChevronDownOutline
-					class="ms-2 h-2 w-6 text-white dark:text-white"
-				/></Button
-			>
+				<Button
+					class="h-20 w-40 text-black"
+					style="background:#EEEEEE; font-size:20px; border-radius:10px"
+					onclick={() => (selectedPoints = [])}
+					>{'Clear Selection'}<ChevronDownOutline
+						class="ms-2 h-2 w-6 text-white dark:text-white"
+					/></Button
+				>
+			</div>
 		</div>
-		<h1 style="margin: 10px;">Speedrun Data from Speedrun.com</h1>
 	</div>
 
 	{#if selectedGame == 'Game'}

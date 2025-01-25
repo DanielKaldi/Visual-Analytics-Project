@@ -108,6 +108,7 @@
 <svg {width} {height} class="border-4">
 	{#each plotData as { x, y, status, index }}
 		<circle
+			class={`${status ? status : 'verified'} ${isContained(index) ? ' focus' : ''}`}
 			cx={xScale(x)}
 			cy={yScale(y)}
 			r={isContained(index) ? radius + 2 : radius}
@@ -188,6 +189,14 @@
 	}
 	circle {
 		outline: none;
+	}
+	circle.rejected:hover {
+		r: 5;
+		fill: #ff1a4b;
+	}
+	circle.verified:hover {
+		r: 5;
+		fill: #1068a2;
 	}
 	line {
 		stroke: black;
