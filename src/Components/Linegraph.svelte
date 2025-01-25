@@ -109,6 +109,12 @@
 			return selectedPoints?.includes(index);
 		}
 	}
+
+	function secondsToTimeM(time) {
+		const minutes = Math.floor(time / 60);
+
+		return `${minutes} min`;
+	}
 </script>
 
 <svg {width} {height} class="border-4">
@@ -164,7 +170,9 @@
 	<line x1={margins.left} y1={margins.top} x2={margins.left} y2={height - margins.bottom} />
 	{#each yTicks as tick}
 		<line x1={margins.left - 3} y1={yScale(tick)} x2={margins.left + 3} y2={yScale(tick)} />
-		<text class="y" alignment-baseline="middle" x={margins.left - 5} y={yScale(tick)}>{tick}</text>
+		<text class="y" alignment-baseline="middle" x={margins.left - 5} y={yScale(tick)}
+			>{keyY == 'time' ? secondsToTimeM(tick) : tick}</text
+		>
 	{/each}
 
 	<text x={margins.left} y={margins.top - 20} text-anchor="middle" style="font-size: 16px"

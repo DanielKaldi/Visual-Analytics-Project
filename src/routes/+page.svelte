@@ -199,6 +199,33 @@
 			if (selectedGame == 'Mario Odyssey') {
 				if (fetchData.data[i].name == 'Any%') continue;
 			}
+			if (selectedGame == 'Goldeneye 007') {
+				if (fetchData.data[i].name == 'Agent') continue;
+				if (fetchData.data[i].name == 'LTK') continue;
+				if (fetchData.data[i].name == 'DLTK') continue;
+				if (fetchData.data[i].id == 'xn2y5zko') continue;
+				if (fetchData.data[i].id == 'p7kjpnk3') continue;
+			}
+			if (selectedGame == 'Minecraft') {
+				if (fetchData.data[i].name == 'Indev') continue;
+				if (fetchData.data[i].name == 'Infdev') continue;
+				if (fetchData.data[i].name == 'Alpha') continue;
+				if (fetchData.data[i].name == 'Beta') continue;
+			}
+			if (selectedGame == 'Broforce') {
+				if (fetchData.data[i].name == 'Arcade Mode - Rambro Only') continue;
+				if (fetchData.data[i].name == 'Campaign Mode - Rambro Only') continue;
+			}
+			if (selectedGame == 'Cooking Mama') {
+				if (fetchData.data[i].name == 'Any%') continue;
+				if (fetchData.data[i].name == 'Gold Medal') continue;
+			}
+			if (selectedGame == 'Grand Theft Auto V') {
+				if (fetchData.data[i].name == 'Any% NG+') continue;
+				if (fetchData.data[i].name == 'Gold Medal NG+') continue;
+				if (fetchData.data[i].id == 'vdoplzy2') continue;
+				if (fetchData.data[i].name == 'Gold Medal') continue;
+			}
 
 			categoryList.push(fetchData.data[i].name);
 			categoryIds.push(fetchData.data[i].id);
@@ -220,14 +247,24 @@
 		leaderboardTimes = [];
 
 		leaderboardData = await fetchGameData('', false, game, category, true);
+
 		for (let i = 0; i < 3; i++) {
 			if (!leaderboardData.data.runs[i]) {
 				continue;
 			}
 			let run = leaderboardData.data.runs[i].run;
-			let userDataURL = run.players[0].uri;
-			userData = await fetchGameData(userDataURL, false, null, null, false);
-			leaderboardPlayers.push(userData.data.names.international);
+			if (run.players[0].name) {
+				leaderboardPlayers.push(run.players[0].name);
+			} else {
+				let userDataURL = run.players[0].uri;
+				userData = await fetchGameData(userDataURL, false, null, null, false);
+
+				if (userData.data.names) {
+					leaderboardPlayers.push(userData.data.names.international);
+				} else {
+					leaderboardPlayers.push('Unknown Player');
+				}
+			}
 			leaderboardTimes.push(secondsToTimeMS(run.times.primary_t));
 		}
 
@@ -409,7 +446,7 @@
 <main class="h-full w-full">
 	<div class="flex w-full items-center justify-center border-4" style="height: {topBarHeight}px;">
 		<div class="absolute z-10 flex w-full justify-between gap-5">
-			<div class="ml-5">
+			<div class="ml-5 flex items-center gap-5">
 				<Button
 					class="h-20 w-40 text-black"
 					style="background:#EEEEEE; font-size:20px; border-radius:10px"
@@ -453,7 +490,7 @@
 				</Dropdown>
 			</div>
 			<h1 style="margin: 10px;">Speedrun Data from Speedrun.com</h1>
-			<div class="mr-5">
+			<div class="mr-5 flex items-center gap-5">
 				<Button
 					class="h-20 w-40 text-black"
 					style="background:#EEEEEE; font-size:20px; border-radius:10px"
@@ -604,7 +641,7 @@
 						onclick={() => setCategory(name)}
 						{name}
 						id={categoryIds[index]}
-						smallText={selectedGame == 'Grand Theft Auto V' ? true : false}
+						smallText={false}
 					/>
 				{/each}
 			</div>
