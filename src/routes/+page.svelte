@@ -12,9 +12,11 @@
 
 	const rejectedColor = '#ff6384';
 	const verifiedColor = '#36a2eb';
+	const newColor = '#ffce56';
 
 	const rejectedColorFocus = '#ff1a4b';
 	const verifiedColorFocus = '#1068a2';
+	const newColorFocus = '#e6a400';
 
 	let pageSize = 200;
 
@@ -557,6 +559,8 @@
 						{verifiedColor}
 						{rejectedColorFocus}
 						{verifiedColorFocus}
+						{newColor}
+						{newColorFocus}
 						onClick={(index) => (selectedPoints = index)}
 						{selectedPoints}
 						data={WRProgressionData}
@@ -573,6 +577,8 @@
 						{verifiedColor}
 						{rejectedColorFocus}
 						{verifiedColorFocus}
+						{newColor}
+						{newColorFocus}
 						onClick={(index) => (selectedPoints = index)}
 						{selectedPoints}
 						data={multipleRunData}
@@ -597,6 +603,8 @@
 						{verifiedColor}
 						{rejectedColorFocus}
 						{verifiedColorFocus}
+						{newColor}
+						{newColorFocus}
 						onClick={(index) => (selectedPoints = index)}
 						{selectedPoints}
 					/>
@@ -616,6 +624,8 @@
 						{verifiedColor}
 						{rejectedColorFocus}
 						{verifiedColorFocus}
+						{newColor}
+						{newColorFocus}
 						onClick={(index) => (selectedPoints = index)}
 						{selectedPoints}
 						data={sumByMonthData}
@@ -628,6 +638,8 @@
 						{verifiedColor}
 						{rejectedColorFocus}
 						{verifiedColorFocus}
+						{newColor}
+						{newColorFocus}
 						onClick={(index) => (selectedPoints = index)}
 						{selectedPoints}
 						data={gameDataAll}

@@ -23,6 +23,8 @@
 		verifiedColor = '#36a2eb',
 		rejectedColorFocus,
 		verifiedColorFocus,
+		newColor,
+		newColorFocus,
 		onClick,
 		selectedPoints
 	} = $props();
@@ -116,9 +118,13 @@
 				? isContained(index)
 					? rejectedColorFocus
 					: rejectedColor
-				: isContained(index)
-					? verifiedColorFocus
-					: verifiedColor}
+				: status == 'new'
+					? isContained(index)
+						? newColorFocus
+						: newColor
+					: isContained(index)
+						? verifiedColorFocus
+						: verifiedColor}
 			myIndex={index}
 			tabindex="0"
 			role="button"
@@ -197,6 +203,14 @@
 	circle.verified:hover {
 		r: 5;
 		fill: #1068a2;
+	}
+	circle.new:hover {
+		r: 5;
+		fill: #ffce56;
+	}
+	circle.new.focus {
+		r: 5;
+		fill: #e6a400;
 	}
 	line {
 		stroke: black;

@@ -10,6 +10,8 @@
 		verifiedColor,
 		rejectedColorFocus,
 		verifiedColorFocus,
+		newColor,
+		newColorFocus,
 		onClick,
 		selectedPoints,
 		data
@@ -107,6 +109,16 @@
 					onclick={handleClick}
 					onkeydown={() => {}}
 				/>
+			{:else if label == 'new'}
+				<path
+					d={path}
+					fill={isContained(index) ? newColorFocus : newColor}
+					myIndex={index}
+					tabindex="0"
+					role="button"
+					onclick={handleClick}
+					onkeydown={() => {}}
+				/>
 			{:else}
 				<path
 					d={path}
@@ -127,6 +139,10 @@
 			{#each plotData as { label, value, index }}
 				{#if label == 'rejected'}
 					<li class="label" style="color: {rejectedColor}">
+						{label}: {value}
+					</li>
+				{:else if label == 'new'}
+					<li class="label" style="color: {newColor}">
 						{label}: {value}
 					</li>
 				{:else}
