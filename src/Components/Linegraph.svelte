@@ -115,7 +115,7 @@
 	function secondsToTimeM(time) {
 		const minutes = Math.floor(time / 60);
 
-		return `${minutes} min`;
+		return `${minutes}m`;
 	}
 
 	function secondsToTimeS(time) {
@@ -244,7 +244,7 @@
 		stroke: black;
 	}
 	text {
-		font-size: 12px;
+		font-size: 16px;
 	}
 	text.x {
 		text-anchor: middle;

@@ -9,6 +9,7 @@
 	import CurrentWr from '../Components/CurrentWR.svelte';
 	import { interpolateGreens } from 'd3';
 	import GameImage from '../Components/GameImage.svelte';
+	import { Typography } from '@mui/material';
 
 	const rejectedColor = '#ff6384';
 	const verifiedColor = '#36a2eb';
@@ -106,7 +107,7 @@
 		}
 
 		if (getLeaderboards) {
-			url = `https://www.speedrun.com/api/v1/leaderboards/${gameId}/category/${categoryId}?top=3}`;
+			url = `https://www.speedrun.com/api/v1/leaderboards/${gameId}/category/${categoryId}?top=5}`;
 		}
 
 		if (givenUrl != '') {
@@ -250,7 +251,7 @@
 
 		leaderboardData = await fetchGameData('', false, game, category, true);
 
-		for (let i = 0; i < 3; i++) {
+		for (let i = 0; i < 5; i++) {
 			if (!leaderboardData.data.runs[i]) {
 				continue;
 			}
@@ -449,55 +450,56 @@
 	<div class="flex w-full items-center justify-center border-4" style="height: {topBarHeight}px;">
 		<div class="absolute z-10 flex w-full justify-between gap-5">
 			<div class="ml-5 flex items-center gap-5">
-				<Button
+				<!--
+					<Button
 					class="h-20 w-40 text-black"
 					style="background:#EEEEEE; font-size:20px; border-radius:10px"
 					onclick={() => (gameDropdownOpen = true)}
 					>{selectedGame}<ChevronDownOutline
-						class="ms-2 h-2 w-6 text-white dark:text-white"
+					class="ms-2 h-2 w-6 text-white dark:text-white"
 					/></Button
-				>
-				<Dropdown open={gameDropdownOpen}>
-					{#each gamesList as game}
+					>
+					<Dropdown open={gameDropdownOpen}>
+						{#each gamesList as game}
 						<DropdownItem
-							onclick={() => {
-								setGame(game);
-								gameDropdownOpen = false;
-							}}
-							class="h-10 w-40"
-							style="background:#EEEEEE; font-size: 16px">{game}</DropdownItem
+						onclick={() => {
+							setGame(game);
+							gameDropdownOpen = false;
+						}}
+						class="h-10 w-40"
+						style="background:#EEEEEE; font-size: 16px">{game}</DropdownItem
 						>
-					{/each}
-				</Dropdown>
-
-				<Button
+						{/each}
+					</Dropdown>
+					
+					<Button
 					class="h-20 w-40 text-black"
 					style="background:#EEEEEE; font-size:20px; border-radius:10px"
 					onclick={() => (categoryDropdownOpen = true)}
 					>{selectedCategory}<ChevronDownOutline
-						class="ms-2 h-2 w-6 text-white dark:text-white"
+					class="ms-2 h-2 w-6 text-white dark:text-white"
 					/></Button
-				>
-				<Dropdown open={categoryDropdownOpen}>
-					{#each categoryList as category}
+					>
+					<Dropdown open={categoryDropdownOpen}>
+						{#each categoryList as category}
 						<DropdownItem
-							onclick={() => {
-								setCategory(category);
-								categoryDropdownOpen = false;
-							}}
-							class="h-10 w-40"
-							style="background:#EEEEEE; font-size: 16px">{category}</DropdownItem
+						onclick={() => {
+							setCategory(category);
+							categoryDropdownOpen = false;
+						}}
+						class="h-10 w-40"
+						style="background:#EEEEEE; font-size: 16px">{category}</DropdownItem
 						>
-					{/each}
-				</Dropdown>
-			</div>
-			<h1 style="margin: 10px;">Speedrun Data from Speedrun.com</h1>
-			<div class="mr-5 flex items-center gap-5">
+						{/each}
+					</Dropdown>
+					-->
 				<Button
 					class="h-20 w-40 text-black"
 					style="background:#EEEEEE; font-size:20px; border-radius:10px"
-					onclick={() => toggleStatus()}
-					>{verfiedOnlyButtonText}<ChevronDownOutline
+					onclick={() => {
+						(selectedGame = 'Game'), (selectedCategory = 'Category');
+					}}
+					>Clear Game Selection<ChevronDownOutline
 						class="ms-2 h-2 w-6 text-white dark:text-white"
 					/></Button
 				>
@@ -506,10 +508,70 @@
 					class="h-20 w-40 text-black"
 					style="background:#EEEEEE; font-size:20px; border-radius:10px"
 					onclick={() => (selectedPoints = [])}
-					>{'Clear Selection'}<ChevronDownOutline
+					>{'Clear Point Selection'}<ChevronDownOutline
 						class="ms-2 h-2 w-6 text-white dark:text-white"
 					/></Button
 				>
+				<Button
+					class="h-20 w-40 text-black"
+					style="background:#EEEEEE; font-size:20px; border-radius:10px"
+					onclick={() => toggleStatus()}
+					>{verfiedOnlyButtonText}<ChevronDownOutline
+						class="ms-2 h-2 w-6 text-white dark:text-white"
+					/></Button
+				>
+			</div>
+			<!--
+				<h1 style="margin: 10px;">Speedrun Data from Speedrun.com</h1>
+			-->
+			<div class="flex items-center gap-5">
+				{#if selectedGame != 'Game'}
+					<img
+						class="h-20 w-20"
+						src={`/images/${gamesImages[gamesList.indexOf(selectedGame)]}`}
+						alt=""
+					/>
+				{/if}
+				<!--
+					<h3 style="font-size: 20px">Currently <br /> Selected:</h3>
+				-->
+				<div class="flex flex-col">
+					<h4 style="font-size: 20px">
+						{selectedGame != 'Game' ? selectedGame : 'No Game selected'}
+					</h4>
+					<h4 style="font-size: 20px">
+						{selectedCategory != 'Category' ? selectedCategory : 'No Category selected'}
+					</h4>
+					<h4
+						style={`font-size: 20px; color: ${verfiedOnlyButtonText == 'Show Rejected' ? verifiedColor : rejectedColor}`}
+					>
+						{verfiedOnlyButtonText == 'Show Rejected'
+							? 'Rejected Runs are currently hidden'
+							: 'Rejected Runs are currently shown'}
+					</h4>
+				</div>
+			</div>
+			<div class="mr-5 flex items-center gap-5">
+				<!--
+					<Button
+					class="h-20 w-40 text-black"
+					style="background:#EEEEEE; font-size:20px; border-radius:10px"
+					onclick={() => toggleStatus()}
+					>{verfiedOnlyButtonText}<ChevronDownOutline
+					class="ms-2 h-2 w-6 text-white dark:text-white"
+					/></Button
+					>
+					
+					<Button
+					class="h-20 w-40 text-black"
+					style="background:#EEEEEE; font-size:20px; border-radius:10px"
+					onclick={() => (selectedPoints = [])}
+					>{'Clear Point Selection'}<ChevronDownOutline
+					class="ms-2 h-2 w-6 text-white dark:text-white"
+					/></Button
+					>
+					-->
+				<div style="font-size: 25px">Speedrun Data from Speedrun.com</div>
 			</div>
 		</div>
 	</div>
@@ -550,7 +612,7 @@
 						width={(screenWidth * 3) / 8}
 						height={(screenHeight - topBarHeight) / 2}
 						tickAmountX={5}
-						tickAmountY={10}
+						tickAmountY={6}
 						radius={3}
 						labelX="Submission Date"
 						labelY="Time"
@@ -593,7 +655,7 @@
 						XisDate={true}
 						keyY="time"
 						tickAmountX={5}
-						tickAmountY={10}
+						tickAmountY={6}
 						labelX="Submission Date"
 						labelY="Time"
 						radius={3}
@@ -615,7 +677,7 @@
 						width={(screenWidth * 3) / 7}
 						height={(screenHeight - topBarHeight) / 2}
 						tickAmountX={5}
-						tickAmountY={10}
+						tickAmountY={6}
 						radius={3}
 						labelX="Submission Month"
 						labelY="Nr. of Runs"
