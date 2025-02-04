@@ -528,7 +528,7 @@
 				{#if selectedGame != 'Game'}
 					<img
 						class="h-20 w-20"
-						src={`/images/${gamesImages[gamesList.indexOf(selectedGame)]}`}
+						src={base + `/images/${gamesImages[gamesList.indexOf(selectedGame)]}`}
 						alt=""
 					/>
 				{/if}
