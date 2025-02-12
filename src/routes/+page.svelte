@@ -519,7 +519,7 @@
 					{#if selectedPoints.length != 0}
 						<img
 							class="absolute right-[-10px] top-[-10px] z-10 h-[30px] w-[30px]"
-							src="/images/closeButton.svg"
+							src={base + '/images/closeButton.svg'}
 							alt=""
 							onclick={() => {
 								selectedPoints = [];
@@ -551,7 +551,7 @@
 						/>
 						<img
 							class="absolute right-[-10px] top-[-10px] z-10 h-[30px] w-[30px]"
-							src="/images/closeButton.svg"
+							src={base + '/images/closeButton.svg'}
 							alt=""
 							onclick={() => {
 								(selectedGame = 'Game'), (selectedCategory = 'Category');
