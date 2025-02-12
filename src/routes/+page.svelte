@@ -574,7 +574,7 @@
 					<div class="flex gap-1">
 						<img
 							class="w-[35px]"
-							src={verfiedOnlyButtonText == 'Show Rejected'
+							src={base + verfiedOnlyButtonText == 'Show Rejected'
 								? '/images/toggleOn.svg'
 								: '/images/toggleOff.svg'}
 							alt=""
