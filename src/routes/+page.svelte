@@ -574,9 +574,9 @@
 					<div class="flex gap-1">
 						<img
 							class="w-[35px]"
-							src={base + verfiedOnlyButtonText == 'Show Rejected'
-								? '/images/toggleOn.svg'
-								: '/images/toggleOff.svg'}
+							src={verfiedOnlyButtonText == 'Show Rejected'
+								? base + '/images/toggleOn.svg'
+								: base + '/images/toggleOff.svg'}
 							alt=""
 							onclick={() => toggleStatus()}
 						/>
