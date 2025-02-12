@@ -139,15 +139,15 @@
 			{#each plotData as { label, value, index }}
 				{#if label == 'rejected'}
 					<li class="label" style="color: {rejectedColor}">
-						{label}: {value}
+						{'Rejected'}: {value}
 					</li>
 				{:else if label == 'new'}
 					<li class="label" style="color: {newColor}">
-						{label}: {value}
+						{'Pending'}: {value}
 					</li>
 				{:else}
 					<li class="label" style="color: {verifiedColor}">
-						{label}: {value}
+						{'Verified'}: {value}
 					</li>
 				{/if}
 			{/each}

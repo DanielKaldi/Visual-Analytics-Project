@@ -493,44 +493,73 @@
 						{/each}
 					</Dropdown>
 					-->
-				<Button
+				<!--
+					<Button
 					class="h-20 w-40 text-black"
 					style="background:#EEEEEE; font-size:20px; border-radius:10px"
 					onclick={() => {
 						(selectedGame = 'Game'), (selectedCategory = 'Category');
 					}}
 					>Clear Game Selection<ChevronDownOutline
-						class="ms-2 h-2 w-6 text-white dark:text-white"
+					class="ms-2 h-2 w-6 text-white dark:text-white"
 					/></Button
-				>
+					>
+					-->
 
-				<Button
-					class="h-20 w-40 text-black"
-					style="background:#EEEEEE; font-size:20px; border-radius:10px"
-					onclick={() => (selectedPoints = [])}
-					>{'Clear Point Selection'}<ChevronDownOutline
-						class="ms-2 h-2 w-6 text-white dark:text-white"
-					/></Button
-				>
-				<Button
+				<div class="relative">
+					<Button
+						class="h-20 w-40 text-black"
+						style="background:#EEEEEE; font-size:20px; border-radius:10px"
+						onclick={() => (selectedPoints = [])}
+					>
+						<!--{'Clear Point Selection'}-->
+						{'Selected Point Count: ' + selectedPoints.length}
+						<ChevronDownOutline class="ms-2 h-2 w-6 text-white dark:text-white" /></Button
+					>
+					{#if selectedPoints.length != 0}
+						<img
+							class="absolute right-[-10px] top-[-10px] z-10 h-[30px] w-[30px]"
+							src="/images/closeButton.svg"
+							alt=""
+							onclick={() => {
+								selectedPoints = [];
+							}}
+						/>
+					{/if}
+				</div>
+				<!--
+					<Button
 					class="h-20 w-40 text-black"
 					style="background:#EEEEEE; font-size:20px; border-radius:10px"
 					onclick={() => toggleStatus()}
 					>{verfiedOnlyButtonText}<ChevronDownOutline
-						class="ms-2 h-2 w-6 text-white dark:text-white"
+					class="ms-2 h-2 w-6 text-white dark:text-white"
 					/></Button
-				>
+					>
+					-->
 			</div>
 			<!--
 				<h1 style="margin: 10px;">Speedrun Data from Speedrun.com</h1>
 			-->
-			<div class="flex items-center gap-5">
+			<div class="flex w-full items-center justify-center gap-5">
 				{#if selectedGame != 'Game'}
-					<img
-						class="h-20 w-20"
-						src={base + `/images/${gamesImages[gamesList.indexOf(selectedGame)]}`}
-						alt=""
-					/>
+					<div class="relative">
+						<img
+							class="h-20 w-20"
+							src={base + `/images/${gamesImages[gamesList.indexOf(selectedGame)]}`}
+							alt=""
+						/>
+						<img
+							class="absolute right-[-10px] top-[-10px] z-10 h-[30px] w-[30px]"
+							src="/images/closeButton.svg"
+							alt=""
+							onclick={() => {
+								(selectedGame = 'Game'), (selectedCategory = 'Category');
+							}}
+						/>
+					</div>
+				{:else}
+					<div class="h-20 w-20" />
 				{/if}
 				<!--
 					<h3 style="font-size: 20px">Currently <br /> Selected:</h3>
@@ -542,13 +571,24 @@
 					<h4 style="font-size: 20px">
 						{selectedCategory != 'Category' ? selectedCategory : 'No Category selected'}
 					</h4>
-					<h4
-						style={`font-size: 20px; color: ${verfiedOnlyButtonText == 'Show Rejected' ? verifiedColor : rejectedColor}`}
-					>
-						{verfiedOnlyButtonText == 'Show Rejected'
-							? 'Rejected Runs are currently hidden'
-							: 'Rejected Runs are currently shown'}
-					</h4>
+					<div class="flex gap-1">
+						<img
+							class="w-[35px]"
+							src={verfiedOnlyButtonText == 'Show Rejected'
+								? '/images/toggleOn.svg'
+								: '/images/toggleOff.svg'}
+							alt=""
+							onclick={() => toggleStatus()}
+						/>
+						<h4
+							class="w-[310px]"
+							style={`font-size: 20px; color: ${verfiedOnlyButtonText == 'Show Rejected' ? verifiedColor : rejectedColor}`}
+						>
+							{verfiedOnlyButtonText == 'Show Rejected'
+								? 'Rejected Runs are currently hidden'
+								: 'Rejected Runs are currently shown '}
+						</h4>
+					</div>
 				</div>
 			</div>
 			<div class="mr-5 flex items-center gap-5">
@@ -571,7 +611,7 @@
 					/></Button
 					>
 					-->
-				<div style="font-size: 25px">Speedrun Data from Speedrun.com</div>
+				<div style="font-size: 22px">Speedrun Data from Speedrun.com</div>
 			</div>
 		</div>
 	</div>
