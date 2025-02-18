@@ -338,6 +338,7 @@
 		selectedCategory = 'Category';
 		categoryList = [];
 		categoryIds = [];
+		selectedPoints = [];
 		selectedGame = game;
 		await setCategories(game);
 
